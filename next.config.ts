@@ -1,9 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
-  cacheComponents: true,
-  partialPrefetching: true,
+  // Static build: `pnpm build` writes the site to the `out` folder.
+  output: "export",
+  images: { unoptimized: true },
+  trailingSlash: true,
   turbopack: {
     rules: {
       "*.css": {
