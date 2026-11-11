@@ -1,26 +1,162 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================================
+   Theme tokens
+   Change pine + lime to rebrand the whole site.
+   ============================================================ */
 
+/* Fonts are loaded in app/layout.tsx (next/font) */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@theme {
+  /* Primary: pine green */
+  --color-pine-50: #eef6f3;
+  --color-pine-100: #d5e9e2;
+  --color-pine-200: #a9d1c3;
+  --color-pine-400: #4f9c84;
+  --color-pine-600: #1f5c4c;
+  --color-pine-700: #184a3e;
+  --color-pine-800: #143c33;
+  --color-pine-900: #0f2e28;
+  --color-pine-950: #0a201c;
+
+  /* Accent: lime (buttons and calls to action) */
+  --color-lime-soft: #dcf7c4;
+  --color-lime: #c2f0a0;
+  --color-lime-deep: #9fdc72;
+
+  /* Pastel surfaces */
+  --color-sage: #e3ead6;
+  --color-butter: #f6f4cf;
+  --color-peach: #f8e0cc;
+  --color-sky: #dde7f4;
+  --color-mist: #f1f6fa;
+
+  /* Neutrals */
+  --color-ink: #16201d;
+  --color-ink-soft: #4a5551;
+  --color-ink-muted: #8a9490;
+  --color-line: #e6ebe9;
+
+  /* Shape & depth */
+  --radius-card: 1.5rem;
+  --radius-pill: 9999px;
+  --shadow-card: 0 1px 2px rgb(15 46 40 / 0.04), 0 12px 32px -12px rgb(15 46 40 / 0.12);
+
+  /* Motion: endless logo strip */
+  --animate-marquee: marquee 35s linear infinite;
+  @keyframes marquee {
+    to { transform: translateX(-50%); }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================================================
+   Base
+   ============================================================ */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-white font-sans text-ink antialiased;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display font-semibold tracking-tight text-ink;
+  }
+
+  ::selection {
+    @apply bg-lime text-pine-900;
+  }
+}
+
+/* ============================================================
+   Components
+   ============================================================ */
+
+@layer components {
+  /* Layout */
+  .wrap {
+    @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .section {
+    @apply py-20 md:py-28;
+  }
+
+  .section-mist {
+    @apply bg-mist;
+  }
+
+  /* Section header: tag + heading + lead */
+  .tag {
+    @apply inline-flex items-center gap-2 rounded-pill bg-lime-soft px-3.5 py-1 text-xs font-medium text-pine-800;
+  }
+
+  .tag::before {
+    content: "";
+    @apply size-1.5 rounded-full bg-pine-600;
+  }
+
+  .heading {
+    @apply mt-4 text-3xl leading-tight md:text-5xl;
+  }
+
+  .lead {
+    @apply mt-4 max-w-2xl text-lg leading-relaxed text-ink-soft;
+  }
+
+  /* Buttons: "btn btn-lime", "btn btn-pine" or "btn btn-line" */
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-pill px-6 py-3 text-sm font-semibold transition duration-300;
+  }
+
+  .btn-lime {
+    @apply bg-lime text-pine-900 hover:bg-lime-deep;
+  }
+
+  .btn-pine {
+    @apply bg-pine-900 text-white hover:bg-pine-800;
+  }
+
+  .btn-line {
+    @apply border border-line bg-white text-ink hover:border-pine-400;
+  }
+
+  .btn svg {
+    @apply transition-transform duration-300;
+  }
+
+  .btn:hover svg {
+    @apply translate-x-0.5 -translate-y-0.5;
+  }
+
+  /* Cards: "card-pastel bg-sage" (or bg-butter / bg-peach / bg-sky) */
+  .card-pastel {
+    @apply relative overflow-hidden rounded-card p-8 md:p-10;
+  }
+
+  .chip-icon {
+    @apply grid size-12 place-items-center rounded-2xl bg-white/70 text-pine-800;
+  }
+
+  /* Form fields: <label class="label"> + <input class="input"> */
+  .label {
+    @apply mb-2 block text-sm font-medium text-ink;
+  }
+
+  .input {
+    @apply w-full rounded-2xl border border-line bg-white px-4 py-3 text-ink transition duration-200 placeholder:text-ink-muted focus:border-pine-400 focus:ring-4 focus:ring-lime-soft focus:outline-none;
+  }
+
+  /* Dot-grid background texture */
+  .dots {
+    background-image: radial-gradient(rgb(15 46 40 / 0.12) 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
 }

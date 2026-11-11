@@ -1,0 +1,119 @@
+/* Grove theme — Tailwind CSS v4
+   Primary: pine green · Accent: lime · Surfaces: soft pastels
+   Change the pine and lime values below to rebrand the whole site. */
+
+@import "tailwindcss";
+
+/* Fonts are loaded in app/layout.tsx with next/font */
+@theme inline {
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
+}
+
+@theme {
+  /* Primary — pine green (structure, dark sections, text accents) */
+  --color-pine-50: #eef6f3;
+  --color-pine-100: #d5e9e2;
+  --color-pine-200: #a9d1c3;
+  --color-pine-400: #4f9c84;
+  --color-pine-600: #1f5c4c;
+  --color-pine-700: #184a3e;
+  --color-pine-800: #143c33;
+  --color-pine-900: #0f2e28;
+  --color-pine-950: #0a201c;
+
+  /* Accent — lime (buttons and calls to action only) */
+  --color-lime-soft: #dcf7c4;
+  --color-lime: #c2f0a0;
+  --color-lime-deep: #9fdc72;
+
+  /* Pastel surfaces (content cards) */
+  --color-sage: #e3ead6;
+  --color-butter: #f6f4cf;
+  --color-peach: #f8e0cc;
+  --color-sky: #dde7f4;
+  --color-mist: #f1f6fa;
+
+  /* Neutrals */
+  --color-ink: #16201d;
+  --color-ink-soft: #4a5551;
+  --color-ink-muted: #8a9490;
+  --color-line: #e6ebe9;
+
+  /* Shape & depth */
+  --radius-card: 1.5rem;
+  --radius-pill: 9999px;
+  --shadow-card: 0 1px 2px rgb(15 46 40 / 0.04), 0 12px 32px -12px rgb(15 46 40 / 0.12);
+
+  /* Motion */
+  --animate-rise: rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body { @apply bg-white font-sans text-ink antialiased; }
+  h1, h2, h3, h4 { @apply font-display font-semibold tracking-tight text-ink; }
+  ::selection { @apply bg-lime text-pine-900; }
+}
+
+@layer components {
+  /* Layout */
+  .wrap { @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8; }
+  .section { @apply py-20 md:py-28; }
+  .section-mist { @apply bg-mist; }
+  .section-dark { @apply bg-pine-900 text-pine-100; }
+  .section-dark :is(h1, h2, h3, h4) { @apply text-white; }
+
+  /* Section headings */
+  .tag {
+    @apply inline-flex items-center gap-2 rounded-pill bg-lime-soft px-3.5 py-1 text-xs font-medium text-pine-800;
+  }
+  .tag::before { content: ""; @apply size-1.5 rounded-full bg-pine-600; }
+  .section-dark .tag { @apply bg-pine-800 text-lime; }
+  .section-dark .tag::before { @apply bg-lime; }
+
+  .heading { @apply mt-4 text-3xl leading-tight md:text-5xl; }
+  .heading-xl { @apply text-4xl leading-[1.05] sm:text-5xl lg:text-6xl; }
+  .lead { @apply mt-4 max-w-2xl text-lg leading-relaxed text-ink-soft; }
+  .section-dark .lead { @apply text-pine-200; }
+
+  /* Buttons — combine: "btn btn-lime", "btn btn-pine", "btn btn-line" */
+  .btn {
+    @apply inline-flex items-center gap-2 rounded-pill px-6 py-3 text-sm font-semibold transition duration-300;
+  }
+  .btn-lime { @apply bg-lime text-pine-900 hover:bg-lime-deep; }
+  .btn-pine { @apply bg-pine-800 text-white hover:bg-pine-700; }
+  .btn-line { @apply border border-line bg-white text-ink hover:border-pine-400; }
+  .btn svg { @apply transition-transform duration-300; }
+  .btn:hover svg { @apply translate-x-0.5 -translate-y-0.5; }
+
+  /* Floating rounded navbar */
+  .nav-float {
+    @apply mx-auto flex max-w-6xl items-center justify-between rounded-pill border border-line bg-white/80 py-2 pr-2 pl-4 backdrop-blur-xl;
+  }
+
+  /* Cards — white, or pastel: "card-pastel bg-sage" / bg-butter / bg-peach / bg-sky */
+  .card {
+    @apply rounded-card border border-line bg-white p-8 transition duration-300 hover:-translate-y-1;
+    box-shadow: var(--shadow-card);
+  }
+  .card-pastel { @apply relative overflow-hidden rounded-card p-8 md:p-10; }
+  .chip-icon { @apply grid size-12 place-items-center rounded-2xl bg-white/70 text-pine-800; }
+
+  /* Stats */
+  .stat-num { @apply font-display text-4xl font-semibold tracking-tight text-pine-800 md:text-5xl; }
+  .stat-label { @apply mt-2 text-sm text-ink-muted; }
+
+  /* Textures */
+  .dots {
+    background-image: radial-gradient(rgb(15 46 40 / 0.12) 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+
+  /* Dark call-to-action band */
+  .cta-band { @apply relative overflow-hidden rounded-[2rem] bg-pine-900 px-6 py-14 text-white md:px-14 md:py-20; }
+}
