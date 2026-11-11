@@ -42,15 +42,17 @@ The site is built with `output: "export"`. Everything must work without a server
 - `app/`: routes. `layout.tsx` renders the shared Header and Footer, so pages only return their sections.
 - `components/<Name>/`: one folder per section, exported through `index.ts`.
 - `data/`: all content. Edit copy here, not in components.
-  - `site.ts` (name, contact details, socials, booking link), `services.ts` (drives the header dropdown, footer column, home cards and `/services/<slug>` pages), `stats.ts`, `faqs.ts`, `posts.ts`, `about.ts`, `privacy.ts`
+  - `portfolio.ts` (apps on `/portfolio`), `site.ts` (name, contact details, socials, booking link), `services.ts` (drives the header dropdown, footer column, home cards and `/services/<slug>` pages), `stats.ts`, `faqs.ts`, `posts.ts`, `about.ts`, `privacy.ts`
 - `public/`: images. `public/clients/` holds the client logos.
 - `_unused/`: old backups, safe to delete.
 
 ## Routes
 
-`/`, `/about`, `/contact`, `/privacy-policy`, `/services`, `/services/<slug>` (five services). Terms and Cookie links point to `/privacy-policy`.
+`/`, `/about`, `/contact`, `/portfolio`, `/privacy-policy`, `/services`, `/services/<slug>` (five services). Terms and Cookie links point to `/privacy-policy`.
 
-Not built yet (links to them 404): `/portfolio`, `/blog`, `/blog/<slug>`.
+`/portfolio` lists our own apps (content in `data/portfolio.ts`).
+
+Not built yet (links to them 404): `/blog`, `/blog/<slug>`.
 
 ## Conventions
 

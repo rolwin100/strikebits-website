@@ -79,7 +79,8 @@ Rules:
 
 ## Open items
 
-- `/portfolio`, `/blog` and `/blog/<slug>` are linked but not built.
+- `/blog` and `/blog/<slug>` are linked but not built.
+- Sugar Ship uses the Sugar Rush logo until its own is supplied (`data/portfolio.ts`).
 - The contact form opens the visitor's email app; it is not connected to a form service. The newsletter form is not wired.
 - Placeholders awaiting real values: stats and the hero "50+", social links, `bookingUrl`, team members and founding story, sample blog posts, service-page copy (draft), privacy policy wording (reconstructed, needs the exact text).
 - `public/banner-img-1.webp` needs a rights check before launch.
