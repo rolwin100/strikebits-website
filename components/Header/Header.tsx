@@ -4,7 +4,7 @@ import { Suspense, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
-import { ArrowRight, ArrowUpRight, ChevronDown, Menu, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ChevronDown, LayoutGrid, Menu, X } from "lucide-react";
 import Logo from "../Logo";
 import { cta, links, services } from "./navigation";
 
@@ -123,6 +123,10 @@ function FragmentWithDropdown({
 
 /* ---------------- Mobile ---------------- */
 
+// Same tile as the desktop dropdown, a size smaller
+const mobileIconTile =
+  "grid size-8 shrink-0 place-items-center rounded-lg bg-pine-50 text-pine-700 transition group-hover:bg-lime group-hover:text-pine-900";
+
 function MobileLinks({ pathname, onNavigate }: { pathname: string; onNavigate: () => void }) {
   const [servicesOpen, setServicesOpen] = useState(false);
 
@@ -175,13 +179,27 @@ function FragmentWithMobileServices({
           {open && (
             <ul className="mb-2 ml-4 space-y-1 border-l border-line pl-3">
               <li>
-                <Link href="/services" onClick={onNavigate} className="block rounded-xl px-3 py-2 text-sm font-semibold text-pine-700 hover:bg-mist">
+                <Link
+                  href="/services"
+                  onClick={onNavigate}
+                  className="group flex items-center gap-3 rounded-xl px-2 py-1.5 text-sm font-semibold text-pine-700 hover:bg-mist"
+                >
+                  <span className={mobileIconTile}>
+                    <LayoutGrid className="size-4" />
+                  </span>
                   All services
                 </Link>
               </li>
-              {services.map((s) => (
+              {services.map(({ icon: Icon, ...s }) => (
                 <li key={s.label}>
-                  <Link href={s.href} onClick={onNavigate} className="block rounded-xl px-3 py-2 text-sm text-ink-soft hover:bg-mist hover:text-ink">
+                  <Link
+                    href={s.href}
+                    onClick={onNavigate}
+                    className="group flex items-center gap-3 rounded-xl px-2 py-1.5 text-sm text-ink-soft hover:bg-mist hover:text-ink"
+                  >
+                    <span className={mobileIconTile}>
+                      <Icon className="size-4" />
+                    </span>
                     {s.label}
                   </Link>
                 </li>
