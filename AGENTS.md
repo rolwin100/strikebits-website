@@ -24,6 +24,7 @@ Marketing site for **StrikeBits**, a Shopify app development agency and Shopify 
 - `pnpm dev`: local development
 - `pnpm build`: static export to `out/` (preview with `npx serve out`)
 - `pnpm lint`
+- `netlify dev`: runs the site together with the contact form function (`pnpm dev` alone returns 404 for `/api/contact`)
 - Typecheck: `node node_modules/typescript/bin/tsc --noEmit -p .`
 
 ## Static export rules
@@ -32,6 +33,7 @@ The site is built with `output: "export"`. Everything must work without a server
 
 - Do not enable `cacheComponents` or `partialPrefetching`; the build fails with "PPR cannot be enabled in export mode".
 - No route handlers that need a server, server actions, `cookies()`, `headers()`, redirects or rewrites in config.
+- Server code goes in Netlify Functions instead. The contact form posts to `/api/contact`, served by `netlify/functions/contact.mts`, which emails enquiries through Resend. Its environment variables are listed in `.env.example`.
 - Every dynamic route needs `generateStaticParams`; `params` is a Promise and must be awaited.
 - Images are unoptimised (`images.unoptimized`); supply files already sized and compressed (webp/avif).
 - On `next/image`, use `preload` for above-the-fold images, not the deprecated `priority`.

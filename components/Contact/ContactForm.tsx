@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, type FormEvent, type ReactNode } from "react";
-import { ArrowUpRight, ChevronDown, MailCheck } from "lucide-react";
+import { useState, type ReactNode, type SubmitEvent } from "react";
+import { ArrowUpRight, ChevronDown, LoaderCircle, MailCheck } from "lucide-react";
 import { services } from "@/data/services";
 import { site } from "@/data/site";
 
@@ -10,23 +10,20 @@ const serviceOptions = [...services.map((s) => s.title), "Something else"];
 const budgetOptions = ["Under $2,000", "$2,000 – $5,000", "$5,000 – $15,000", "$15,000+", "Not sure yet"];
 
 /**
- * TODO: connect this form to a form service (for example Formspree, Web3Forms or Resend).
- * Until then, submitting opens the visitor's own email app with the message
- * already written and addressed to site.email — nothing is sent from the website itself.
- * To switch, replace the body of sendEnquiry() with a fetch() to your service.
+ * Sends the enquiry to the Netlify Function in netlify/functions/contact.mts,
+ * which emails it to the team through Resend.
+ * Note: `pnpm dev` does not run Netlify Functions; use `netlify dev` to try the form locally.
  */
-function sendEnquiry(data: Record<string, string>) {
-  const subject = `New enquiry from ${data.name}${data.service ? ` (${data.service})` : ""}`;
-  const details = [
-    `Name: ${data.name}`,
-    `Email: ${data.email}`,
-    data.company ? `Company / store: ${data.company}` : "",
-    data.service ? `Service: ${data.service}` : "",
-    data.budget ? `Budget: ${data.budget}` : "",
-  ].filter(Boolean);
-  const body = [...details, "", data.message].join("\n");
-
-  window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+async function sendEnquiry(data: Record<string, string>) {
+  const response = await fetch("/api/contact", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!response.ok) {
+    const result = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(result?.error || "We couldn't send your message.");
+  }
 }
 
 function Select({ id, name, options, placeholder }: { id: string; name: string; options: string[]; placeholder: string }) {
@@ -63,14 +60,26 @@ function Field({ id, label, required, children }: { id: string; label: string; r
 }
 
 export default function ContactForm() {
-  const [sent, setSent] = useState(false);
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
+  const [error, setError] = useState("");
+  const sent = status === "sent";
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     const data = Object.fromEntries([...form.entries()].map(([key, value]) => [key, String(value).trim()]));
-    sendEnquiry(data);
-    setSent(true);
+
+    setStatus("sending");
+    setError("");
+    try {
+      await sendEnquiry(data);
+      formElement.reset();
+      setStatus("sent");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "We couldn't send your message.");
+      setStatus("idle");
+    }
   }
 
   return (
@@ -81,23 +90,21 @@ export default function ContactForm() {
           <span className="mx-auto grid size-14 place-items-center rounded-full bg-lime text-pine-900">
             <MailCheck className="size-7" />
           </span>
-          <h3 className="mt-5 text-2xl">One more step: press send</h3>
-          <p className="mx-auto mt-3 max-w-md text-ink-soft">
-            Your email app should have opened with your message ready to go. If it didn&apos;t, email us
-            directly at{" "}
-            <a href={`mailto:${site.email}`} className="font-medium text-pine-700 underline underline-offset-4">
-              {site.email}
-            </a>
-            .
-          </p>
-          <button type="button" onClick={() => setSent(false)} className="btn btn-line mt-6">
-            Back to the form
+          <h3 className="mt-5 text-2xl">Thanks, your message is on its way</h3>
+          <p className="mx-auto mt-3 max-w-md text-ink-soft">{site.emailNote}.</p>
+          <button type="button" onClick={() => setStatus("idle")} className="btn btn-line mt-6">
+            Send another message
           </button>
         </div>
       )}
 
-      {/* Kept mounted while hidden, so nothing typed is lost */}
       <form onSubmit={handleSubmit} hidden={sent} className="grid gap-5 sm:grid-cols-2">
+        {/* Honeypot for spam bots: hidden from people, so a filled value means a bot */}
+        <div aria-hidden="true" className="sr-only">
+          <label htmlFor="contact-website">Website</label>
+          <input id="contact-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
+        </div>
+
         <Field id="contact-name" label="Your name" required>
           <input id="contact-name" name="name" type="text" required autoComplete="name" placeholder="Jane Smith" className="input" />
         </Field>
@@ -133,10 +140,32 @@ export default function ContactForm() {
           </Field>
         </div>
 
+        {error && (
+          <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800 sm:col-span-2">
+            {error} Please try again, or email us at{" "}
+            <a href={`mailto:${site.email}`} className="font-medium underline underline-offset-4">
+              {site.email}
+            </a>
+            .
+          </p>
+        )}
+
         <div className="flex flex-col gap-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-ink-muted">{site.emailNote}.</p>
-          <button type="submit" className="btn btn-lime shrink-0 justify-center">
-            Send message <ArrowUpRight className="size-4" />
+          <button
+            type="submit"
+            disabled={status === "sending"}
+            className="btn btn-lime shrink-0 justify-center disabled:cursor-wait disabled:opacity-70"
+          >
+            {status === "sending" ? (
+              <>
+                Sending <LoaderCircle className="size-4 animate-spin" />
+              </>
+            ) : (
+              <>
+                Send message <ArrowUpRight className="size-4" />
+              </>
+            )}
           </button>
         </div>
       </form>
