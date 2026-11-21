@@ -62,7 +62,7 @@ export default function About() {
               </Reveal>
             </div>
 
-            <Reveal margin="0px" delay={0.2} y={0} blur={10} className="relative min-h-[360px] sm:min-h-[460px] lg:min-h-[560px]">
+            <Reveal margin="0px" delay={0.2} y={0} blur={10} className="relative min-h-90 sm:min-h-115 lg:min-h-140">
               <Image
                 src={heroPhoto.src}
                 alt={heroPhoto.alt}
@@ -132,7 +132,7 @@ export default function About() {
                 <dd className="font-display text-5xl leading-none font-semibold tracking-tight text-ink md:text-6xl">
                   <CountUp value={s.value} suffix={s.suffix} />
                 </dd>
-                <dd aria-hidden="true" className="max-w-[9rem] text-sm leading-snug text-ink-soft md:text-base">
+                <dd aria-hidden="true" className="max-w-36 text-sm leading-snug text-ink-soft md:text-base">
                   {s.label}
                 </dd>
               </Reveal>
@@ -191,6 +191,7 @@ export default function About() {
                         fill
                         sizes="(min-width: 1024px) 22vw, 45vw"
                         className="object-cover"
+                        loading="eager"
                       />
                     ) : (
                       <UserRound className="size-14 text-pine-900/20 sm:size-20" strokeWidth={1.2} />
@@ -204,7 +205,9 @@ export default function About() {
                     {member.linkedin && (
                       <a
                         href={member.linkedin}
-                        aria-label={`${member.name} on LinkedIn`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`${member.name} on LinkedIn (opens in a new tab)`}
                         className="grid size-9 shrink-0 place-items-center rounded-full border border-line text-ink-soft transition hover:border-pine-400 hover:text-pine-700"
                       >
                         <LinkedInIcon />
