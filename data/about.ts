@@ -51,10 +51,10 @@ export type TeamMember = {
   color: string;
 };
 
-// TODO: confirm the roles for Rolwin and Arjun are accurate, and replace the two placeholders below.
+// TODO: confirm the roles for Rolwin and Arjun are accurate. Replace the two "To be announced" cards as new people join.
 export const team: TeamMember[] = [
   { name: "Rolwin Monteiro", role: "Shopify Developer & Conversion Specialist", photo: "/team/rolwin.webp", linkedin: "https://www.linkedin.com/in/reevan/", color: "bg-sage" },
   { name: "Arjun Karanth", role: "Shopify Expert & Growth Marketer", photo: "/team/arjun.webp", linkedin: "https://www.linkedin.com/in/arjunkaranth/", color: "bg-butter" },
-  { name: "Team member", role: "Role or title", photo: "", linkedin: "", color: "bg-peach" },
-  { name: "Team member", role: "Role or title", photo: "", linkedin: "", color: "bg-sky" },
+  { name: "To be announced", role: "Joining soon", photo: "", linkedin: "", color: "bg-peach" },
+  { name: "To be announced", role: "Joining soon", photo: "", linkedin: "", color: "bg-sky" },
 ];
