@@ -1,17 +1,22 @@
-import Link from "next/link";
+import { LocaleLink } from "@/i18n/client";
 import { ArrowRight, ArrowUpRight, ChevronRight } from "lucide-react";
 import Reveal from "../Reveal";
 import ProcessSection from "../ProcessSection";
 import FaqAccordion from "../Faq/FaqAccordion";
 import ServiceVisual from "./ServiceVisual";
-import { services, type Service } from "@/data/services";
+import { getServices, type Service } from "@/data/services";
+import { serviceIcons } from "@/data/serviceIcons";
+import type { Locale } from "@/i18n/config";
+import { format, getMessages } from "@/i18n/messages";
 
 const pastel = ["bg-sage", "bg-butter", "bg-peach", "bg-sky"];
 
-/** Full page for one service. Content comes from data/services.ts. */
-export default function ServicePage({ service }: { service: Service }) {
+/** Full page for one service. Content comes from i18n/content/en.ts (services). */
+export default function ServicePage({ locale, service }: { locale: Locale; service: Service }) {
+  const m = getMessages(locale);
+  const t = m.servicePage;
   const { title, page } = service;
-  const others = services.filter((s) => s.slug !== service.slug);
+  const others = getServices(locale).filter((s) => s.slug !== service.slug);
 
   return (
     <>
@@ -23,14 +28,14 @@ export default function ServicePage({ service }: { service: Service }) {
 
             <div className="relative flex flex-col justify-center px-6 py-14 sm:px-10 md:py-20 lg:px-14 xl:px-16">
               <Reveal margin="0px" blur={6}>
-                <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-1.5 text-sm text-ink-soft">
-                  <Link href="/" className="transition hover:text-pine-700">
-                    Home
-                  </Link>
+                <nav aria-label={t.breadcrumbAria} className="flex flex-wrap items-center gap-1.5 text-sm text-ink-soft">
+                  <LocaleLink href="/" className="transition hover:text-pine-700">
+                    {m.nav.home}
+                  </LocaleLink>
                   <ChevronRight className="size-3.5 text-ink-muted" />
-                  <Link href="/services" className="transition hover:text-pine-700">
-                    Services
-                  </Link>
+                  <LocaleLink href="/services" className="transition hover:text-pine-700">
+                    {m.nav.services}
+                  </LocaleLink>
                   <ChevronRight className="size-3.5 text-ink-muted" />
                   <span aria-current="page" className="font-medium text-ink">
                     {title}
@@ -46,12 +51,12 @@ export default function ServicePage({ service }: { service: Service }) {
                 <p className="lead">{page.intro}</p>
               </Reveal>
               <Reveal margin="0px" delay={0.3} blur={6} className="mt-8 flex flex-wrap items-center gap-3">
-                <Link href="/contact" className="btn btn-lime">
-                  Get a quote <ArrowUpRight className="size-4" />
-                </Link>
-                <Link href="/portfolio" className="btn btn-line">
-                  View our work
-                </Link>
+                <LocaleLink href="/contact" className="btn btn-lime">
+                  {m.common.getQuote} <ArrowUpRight className="size-4" />
+                </LocaleLink>
+                <LocaleLink href="/portfolio" className="btn btn-line">
+                  {m.common.viewOurWork}
+                </LocaleLink>
               </Reveal>
             </div>
 
@@ -67,15 +72,15 @@ export default function ServicePage({ service }: { service: Service }) {
         <div className="wrap">
           <Reveal blur={6} className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
-              <span className="tag">What&apos;s included</span>
-              <h2 className="heading max-w-xl text-balance">What we do in {title.replace(/^Ongoing/, "ongoing")}</h2>
+              <span className="tag">{t.includedTag}</span>
+              <h2 className="heading max-w-xl text-balance">{format(t.whatWeDo, { topic: service.topic })}</h2>
             </div>
             <p className="max-w-md text-ink-soft md:text-right">{service.description}</p>
           </Reveal>
 
           <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {page.features.map(({ icon: FeatureIcon, title: featureTitle, text }, i) => (
-              <Reveal key={featureTitle} delay={0.05 + (i % 3) * 0.1} y={32} blur={6} className="h-full">
+              <Reveal key={i} delay={0.05 + (i % 3) * 0.1} y={32} blur={6} className="h-full">
                 <article className="h-full rounded-card border border-line bg-white p-8">
                   <span className="grid size-12 place-items-center rounded-2xl bg-pine-50 text-pine-700">
                     <FeatureIcon className="size-6" />
@@ -90,19 +95,19 @@ export default function ServicePage({ service }: { service: Service }) {
       </section>
 
       {/* How we work (shared with the home page) */}
-      <ProcessSection />
+      <ProcessSection locale={locale} />
 
       {/* Good fit */}
       <section className="section">
         <div className="wrap">
           <Reveal blur={6} className="mx-auto max-w-2xl text-center">
-            <span className="tag">Is this right for you?</span>
-            <h2 className="heading text-balance">This is a good fit if&hellip;</h2>
+            <span className="tag">{t.fitTag}</span>
+            <h2 className="heading text-balance">{t.fitHeading}</h2>
           </Reveal>
 
           <div className="mt-14 grid gap-5 md:grid-cols-3">
             {page.fits.map((fit, i) => (
-              <Reveal key={fit.title} delay={0.1 + i * 0.1} y={32} blur={6} className="h-full">
+              <Reveal key={i} delay={0.1 + i * 0.1} y={32} blur={6} className="h-full">
                 <article className={`card-pastel ${pastel[i % pastel.length]} h-full`}>
                   <span className="pointer-events-none absolute -top-5 -right-1 font-display text-[7rem] leading-none font-bold text-pine-900/6">
                     {String(i + 1).padStart(2, "0")}
@@ -120,12 +125,12 @@ export default function ServicePage({ service }: { service: Service }) {
       <section className="section pt-0 md:pt-0">
         <div className="wrap grid gap-12 lg:grid-cols-[1fr_1.5fr] lg:gap-20">
           <Reveal blur={6} className="lg:sticky lg:top-32 lg:self-start">
-            <span className="tag">FAQ</span>
-            <h2 className="heading text-balance">Common questions</h2>
-            <p className="lead">Have a question that isn&apos;t answered here? Ask us directly.</p>
-            <Link href="/contact" className="btn btn-pine mt-8">
-              Ask us a question <ArrowUpRight className="size-4" />
-            </Link>
+            <span className="tag">{m.faq.tag}</span>
+            <h2 className="heading text-balance">{t.faqHeading}</h2>
+            <p className="lead">{t.faqLead}</p>
+            <LocaleLink href="/contact" className="btn btn-pine mt-8">
+              {m.faq.ask} <ArrowUpRight className="size-4" />
+            </LocaleLink>
           </Reveal>
 
           <Reveal delay={0.15} y={32} blur={6}>
@@ -139,34 +144,37 @@ export default function ServicePage({ service }: { service: Service }) {
         <div className="wrap">
           <Reveal blur={6} className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
-              <span className="tag">More services</span>
-              <h2 className="heading max-w-xl text-balance">Explore our other services</h2>
+              <span className="tag">{t.moreTag}</span>
+              <h2 className="heading max-w-xl text-balance">{t.moreHeading}</h2>
             </div>
-            <Link href="/services" className="btn btn-line self-start md:self-auto">
-              All services <ArrowUpRight className="size-4" />
-            </Link>
+            <LocaleLink href="/services" className="btn btn-line self-start md:self-auto">
+              {m.nav.allServices} <ArrowUpRight className="size-4" />
+            </LocaleLink>
           </Reveal>
 
           <div className="mt-14 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
-            {others.map(({ icon: OtherIcon, ...other }, i) => (
+            {others.map((other, i) => {
+              const OtherIcon = serviceIcons[other.slug];
+              return (
               <Reveal key={other.slug} delay={0.1 + i * 0.1} y={32} blur={6} className="h-full">
                 <article className="group relative flex h-full flex-col rounded-card bg-white p-7">
                   <span className="grid size-12 place-items-center rounded-2xl bg-pine-50 text-pine-700 transition duration-300 group-hover:bg-lime group-hover:text-pine-900">
                     <OtherIcon className="size-6" />
                   </span>
                   <h3 className="mt-6 text-lg transition group-hover:text-pine-600">
-                    <Link href={other.href} className="after:absolute after:inset-0">
+                    <LocaleLink href={other.href} className="after:absolute after:inset-0">
                       {other.title}
-                    </Link>
+                    </LocaleLink>
                   </h3>
                   <p className="mt-2 text-sm text-ink-soft">{other.short}</p>
                   <span className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-pine-700">
-                    Learn more
+                    {m.common.learnMore}
                     <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
                   </span>
                 </article>
               </Reveal>
-            ))}
+              );
+            })}
           </div>
         </div>
       </section>

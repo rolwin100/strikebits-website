@@ -1,24 +1,34 @@
-import Link from "next/link";
+import { LocaleLink } from "@/i18n/client";
 import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Reveal from "../Reveal";
-import { posts } from "@/data/posts";
+import { getPosts } from "@/data/posts";
+import type { Locale } from "@/i18n/config";
+import { getMessages } from "@/i18n/messages";
 
-const formatDate = (iso: string) =>
-  new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+const formatDate = (iso: string, locale: Locale) =>
+  new Date(iso).toLocaleDateString(locale === "en" ? "en-GB" : locale, {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    timeZone: "UTC",
+  });
 
-export default function BlogSection() {
+export default function BlogSection({ locale }: { locale: Locale }) {
+  const m = getMessages(locale);
+  const posts = getPosts(locale);
+
   return (
     <section id="blog" className="section bg-mist">
       <div className="wrap">
         {/* Header */}
         <Reveal blur={6} className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <div>
-            <span className="tag">From the blog</span>
-            <h2 className="heading max-w-xl text-balance">Shopify insights &amp; guides</h2>
+            <span className="tag">{m.blog.tag}</span>
+            <h2 className="heading max-w-xl text-balance">{m.blog.heading}</h2>
           </div>
-          <Link href="/blog" className="btn btn-line self-start md:self-auto">
-            View all posts <ArrowUpRight className="size-4" />
-          </Link>
+          <LocaleLink href="/blog" className="btn btn-line self-start md:self-auto">
+            {m.blog.viewAll} <ArrowUpRight className="size-4" />
+          </LocaleLink>
         </Reveal>
 
         {/* Posts */}
@@ -39,17 +49,17 @@ export default function BlogSection() {
 
                   <div className="flex flex-1 flex-col p-7">
                     <p className="text-sm text-ink-muted">
-                      <time dateTime={post.date}>{formatDate(post.date)}</time> · {post.readTime}
+                      <time dateTime={post.date}>{formatDate(post.date, locale)}</time> · {post.readTime}
                     </p>
                     <h3 className="mt-3 text-xl leading-snug transition group-hover:text-pine-600">
                       {/* Stretched link: makes the whole card clickable */}
-                      <Link href={`/blog/${post.slug}`} className="after:absolute after:inset-0">
+                      <LocaleLink href={`/blog/${post.slug}`} className="after:absolute after:inset-0">
                         {post.title}
-                      </Link>
+                      </LocaleLink>
                     </h3>
                     <p className="mt-2 text-ink-soft">{post.excerpt}</p>
                     <span className="mt-auto inline-flex items-center gap-1.5 pt-6 text-sm font-semibold text-pine-700">
-                      Read more
+                      {m.common.readMore}
                       <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
                     </span>
                   </div>

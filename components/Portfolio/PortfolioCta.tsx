@@ -1,10 +1,13 @@
-import Link from "next/link";
+import { LocaleLink } from "@/i18n/client";
 import { ArrowUpRight } from "lucide-react";
 import Reveal from "../Reveal";
-import { portfolioCta } from "@/data/portfolio";
+import { getPortfolio } from "@/data/portfolio";
+import type { Locale } from "@/i18n/config";
 
 /** Dark pine call-to-action band at the bottom of /portfolio. */
-export default function PortfolioCta() {
+export default function PortfolioCta({ locale }: { locale: Locale }) {
+  const portfolioCta = getPortfolio(locale).cta;
+
   return (
     <section className="pb-20 md:pb-28">
       <div className="wrap">
@@ -16,9 +19,9 @@ export default function PortfolioCta() {
               </h2>
               <p className="mt-4 max-w-xl leading-relaxed">{portfolioCta.text}</p>
             </div>
-            <Link href={portfolioCta.button.href} className="btn btn-lime mt-8 shrink-0 md:mt-0">
+            <LocaleLink href={portfolioCta.button.href} className="btn btn-lime mt-8 shrink-0 md:mt-0">
               {portfolioCta.button.label} <ArrowUpRight className="size-4" />
-            </Link>
+            </LocaleLink>
           </div>
         </Reveal>
       </div>

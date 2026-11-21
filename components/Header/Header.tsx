@@ -1,15 +1,20 @@
 "use client";
 
 import { Suspense, useEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "motion/react";
 import { ArrowRight, ArrowUpRight, ChevronDown, LayoutGrid, Menu, X } from "lucide-react";
 import Logo from "../Logo";
-import { cta, links, services } from "./navigation";
+import { LocaleLink, useMessages } from "@/i18n/client";
+import { parsePathname } from "@/i18n/config";
+import { LanguageDropdown } from "./LanguageMenu";
+import { cta, links, serviceIcon, type HeaderService } from "./navigation";
 
-const isActive = (pathname: string, href: string) =>
-  href === "/" ? pathname === "/" : pathname.startsWith(href);
+// The address without its language prefix, so "/de/about/" counts as "/about/"
+const isActive = (pathname: string, href: string) => {
+  const { path } = parsePathname(pathname);
+  return href === "/" ? path === "/" : path.startsWith(href);
+};
 
 const linkBase = "rounded-pill px-3.5 py-1.5 text-sm font-medium transition";
 const linkState = (active: boolean) =>
@@ -17,7 +22,8 @@ const linkState = (active: boolean) =>
 
 /* ---------------- Desktop ---------------- */
 
-function ServicesDropdown({ active }: { active: boolean }) {
+function ServicesDropdown({ active, services }: { active: boolean; services: HeaderService[] }) {
+  const m = useMessages();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLLIElement>(null);
 
@@ -43,7 +49,7 @@ function ServicesDropdown({ active }: { active: boolean }) {
         aria-haspopup="true"
         className={`${linkBase} ${linkState(active)} inline-flex items-center gap-1`}
       >
-        Services
+        {m.nav.services}
         <ChevronDown className={`size-3.5 transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
       </button>
 
@@ -57,32 +63,35 @@ function ServicesDropdown({ active }: { active: boolean }) {
             className="absolute top-full left-1/2 w-88 -translate-x-1/2 pt-3"
           >
             <ul className="rounded-card border border-line bg-white p-2 shadow-xl shadow-pine-900/10">
-              {services.map(({ icon: Icon, ...s }) => (
-                <li key={s.label}>
-                  <Link
+              {services.map((s) => {
+                const Icon = serviceIcon(s.slug);
+                return (
+                <li key={s.slug}>
+                  <LocaleLink
                     href={s.href}
                     onClick={() => setOpen(false)}
                     className="group flex items-start gap-3 rounded-2xl p-3 transition hover:bg-mist"
                   >
                     <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-pine-50 text-pine-700 transition group-hover:bg-lime group-hover:text-pine-900">
-                      <Icon className="size-5" />
+                      {Icon && <Icon className="size-5" />}
                     </span>
                     <span>
                       <span className="block text-sm font-semibold text-ink">{s.label}</span>
                       <span className="block text-xs text-ink-muted">{s.text}</span>
                     </span>
-                  </Link>
+                  </LocaleLink>
                 </li>
-              ))}
+                );
+              })}
               <li className="mt-1 border-t border-line pt-1">
-                <Link
+                <LocaleLink
                   href="/services"
                   onClick={() => setOpen(false)}
                   className="group flex items-center justify-between rounded-2xl px-3 py-3 text-sm font-semibold text-pine-700 transition hover:bg-mist"
                 >
-                  View all services
+                  {m.nav.viewAllServices}
                   <ArrowRight className="size-4 transition-transform duration-300 group-hover:translate-x-1" />
-                </Link>
+                </LocaleLink>
               </li>
             </ul>
           </motion.div>
@@ -92,15 +101,21 @@ function ServicesDropdown({ active }: { active: boolean }) {
   );
 }
 
-function DesktopLinks({ pathname }: { pathname: string }) {
+function DesktopLinks({ pathname, services }: { pathname: string; services: HeaderService[] }) {
+  const m = useMessages();
   return (
     <ul className="hidden items-center gap-1 lg:flex">
       {links.map((link, i) => (
-        <FragmentWithDropdown key={link.href} showDropdown={i === 0} servicesActive={pathname.startsWith("/services")}>
+        <FragmentWithDropdown
+          key={link.href}
+          showDropdown={i === 0}
+          servicesActive={isActive(pathname, "/services")}
+          services={services}
+        >
           <li>
-            <Link href={link.href} className={`${linkBase} ${linkState(isActive(pathname, link.href))}`}>
-              {link.label}
-            </Link>
+            <LocaleLink href={link.href} className={`${linkBase} ${linkState(isActive(pathname, link.href))}`}>
+              {m.nav[link.key]}
+            </LocaleLink>
           </li>
         </FragmentWithDropdown>
       ))}
@@ -109,14 +124,14 @@ function DesktopLinks({ pathname }: { pathname: string }) {
 }
 
 function FragmentWithDropdown({
-  children, showDropdown, servicesActive,
+  children, showDropdown, servicesActive, services,
 }: {
-  children: React.ReactNode; showDropdown: boolean; servicesActive: boolean;
+  children: React.ReactNode; showDropdown: boolean; servicesActive: boolean; services: HeaderService[];
 }) {
   return (
     <>
       {children}
-      {showDropdown && <ServicesDropdown active={servicesActive} />}
+      {showDropdown && <ServicesDropdown active={servicesActive} services={services} />}
     </>
   );
 }
@@ -127,7 +142,12 @@ function FragmentWithDropdown({
 const mobileIconTile =
   "grid size-8 shrink-0 place-items-center rounded-lg bg-pine-50 text-pine-700 transition group-hover:bg-lime group-hover:text-pine-900";
 
-function MobileLinks({ pathname, onNavigate }: { pathname: string; onNavigate: () => void }) {
+function MobileLinks({
+  pathname, onNavigate, services,
+}: {
+  pathname: string; onNavigate: () => void; services: HeaderService[];
+}) {
+  const m = useMessages();
   const [servicesOpen, setServicesOpen] = useState(false);
 
   return (
@@ -139,17 +159,18 @@ function MobileLinks({ pathname, onNavigate }: { pathname: string; onNavigate: (
           open={servicesOpen}
           onToggle={() => setServicesOpen(!servicesOpen)}
           onNavigate={onNavigate}
+          services={services}
         >
           <li>
-            <Link
+            <LocaleLink
               href={link.href}
               onClick={onNavigate}
               className={`block rounded-2xl px-4 py-3 font-medium ${
                 isActive(pathname, link.href) ? "bg-lime-soft text-pine-900" : "hover:bg-mist"
               }`}
             >
-              {link.label}
-            </Link>
+              {m.nav[link.key]}
+            </LocaleLink>
           </li>
         </FragmentWithMobileServices>
       ))}
@@ -158,10 +179,12 @@ function MobileLinks({ pathname, onNavigate }: { pathname: string; onNavigate: (
 }
 
 function FragmentWithMobileServices({
-  children, show, open, onToggle, onNavigate,
+  children, show, open, onToggle, onNavigate, services,
 }: {
   children: React.ReactNode; show: boolean; open: boolean; onToggle: () => void; onNavigate: () => void;
+  services: HeaderService[];
 }) {
+  const m = useMessages();
   return (
     <>
       {children}
@@ -173,13 +196,13 @@ function FragmentWithMobileServices({
             aria-expanded={open}
             className="flex w-full items-center justify-between rounded-2xl px-4 py-3 font-medium hover:bg-mist"
           >
-            Services
+            {m.nav.services}
             <ChevronDown className={`size-4 transition-transform duration-300 ${open ? "rotate-180" : ""}`} />
           </button>
           {open && (
             <ul className="mb-2 ml-4 space-y-1 border-l border-line pl-3">
               <li>
-                <Link
+                <LocaleLink
                   href="/services"
                   onClick={onNavigate}
                   className="group flex items-center gap-3 rounded-xl px-2 py-1.5 text-sm font-semibold text-pine-700 hover:bg-mist"
@@ -187,23 +210,26 @@ function FragmentWithMobileServices({
                   <span className={mobileIconTile}>
                     <LayoutGrid className="size-4" />
                   </span>
-                  All services
-                </Link>
+                  {m.nav.allServices}
+                </LocaleLink>
               </li>
-              {services.map(({ icon: Icon, ...s }) => (
-                <li key={s.label}>
-                  <Link
+              {services.map((s) => {
+                const Icon = serviceIcon(s.slug);
+                return (
+                <li key={s.slug}>
+                  <LocaleLink
                     href={s.href}
                     onClick={onNavigate}
                     className="group flex items-center gap-3 rounded-xl px-2 py-1.5 text-sm text-ink-soft hover:bg-mist hover:text-ink"
                   >
                     <span className={mobileIconTile}>
-                      <Icon className="size-4" />
+                      {Icon && <Icon className="size-4" />}
                     </span>
                     {s.label}
-                  </Link>
+                  </LocaleLink>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           )}
         </li>
@@ -214,17 +240,18 @@ function FragmentWithMobileServices({
 
 /* ------- Active-page wrappers (usePathname needs Suspense with cacheComponents) ------- */
 
-function ActiveDesktopLinks() {
-  return <DesktopLinks pathname={usePathname()} />;
+function ActiveDesktopLinks({ services }: { services: HeaderService[] }) {
+  return <DesktopLinks pathname={usePathname()} services={services} />;
 }
 
-function ActiveMobileLinks({ onNavigate }: { onNavigate: () => void }) {
-  return <MobileLinks pathname={usePathname()} onNavigate={onNavigate} />;
+function ActiveMobileLinks({ onNavigate, services }: { onNavigate: () => void; services: HeaderService[] }) {
+  return <MobileLinks pathname={usePathname()} onNavigate={onNavigate} services={services} />;
 }
 
 /* ---------------- Header ---------------- */
 
-export default function Header() {
+export default function Header({ services }: { services: HeaderService[] }) {
+  const m = useMessages();
   const [menuOpen, setMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -241,25 +268,26 @@ export default function Header() {
     <header className="sticky top-0 z-50 pt-4">
       <div className="wrap">
       <nav
-        aria-label="Main"
+        aria-label={m.nav.ariaLabel}
         className={`flex items-center justify-between gap-4 rounded-pill border bg-white/85 py-2 pr-2 pl-5 backdrop-blur-xl transition-shadow duration-300 ${
           scrolled ? "border-line shadow-lg shadow-pine-900/5" : "border-line/70"
         }`}
       >
         <Logo />
 
-        <Suspense fallback={<DesktopLinks pathname="" />}>
-          <ActiveDesktopLinks />
+        <Suspense fallback={<DesktopLinks pathname="" services={services} />}>
+          <ActiveDesktopLinks services={services} />
         </Suspense>
 
         <div className="flex items-center gap-2">
-          <Link href={cta.href} className="btn btn-pine hidden py-2.5 sm:inline-flex">
-            {cta.label} <ArrowUpRight className="size-4" />
-          </Link>
+          <LanguageDropdown />
+          <LocaleLink href={cta.href} className="btn btn-pine hidden py-2.5 sm:inline-flex">
+            {m.nav.getQuote} <ArrowUpRight className="size-4" />
+          </LocaleLink>
           <button
             type="button"
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-label={menuOpen ? m.nav.closeMenu : m.nav.openMenu}
             aria-expanded={menuOpen}
             className="grid size-10 place-items-center rounded-full border border-line text-ink transition hover:bg-mist lg:hidden"
           >
@@ -278,12 +306,12 @@ export default function Header() {
             transition={{ duration: 0.2 }}
             className="mt-2 rounded-card border border-line bg-white p-3 shadow-xl shadow-pine-900/10 lg:hidden"
           >
-            <Suspense fallback={<MobileLinks pathname="" onNavigate={closeMenu} />}>
-              <ActiveMobileLinks onNavigate={closeMenu} />
+            <Suspense fallback={<MobileLinks pathname="" onNavigate={closeMenu} services={services} />}>
+              <ActiveMobileLinks onNavigate={closeMenu} services={services} />
             </Suspense>
-            <Link href={cta.href} onClick={closeMenu} className="btn btn-pine mt-3 w-full justify-center sm:hidden">
-              {cta.label} <ArrowUpRight className="size-4" />
-            </Link>
+            <LocaleLink href={cta.href} onClick={closeMenu} className="btn btn-pine mt-3 w-full justify-center sm:hidden">
+              {m.nav.getQuote} <ArrowUpRight className="size-4" />
+            </LocaleLink>
           </motion.div>
         )}
       </AnimatePresence>

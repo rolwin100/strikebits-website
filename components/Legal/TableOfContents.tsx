@@ -2,11 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
+import { useMessages } from "@/i18n/client";
 
 type Item = { id: string; title: string };
 
 /** "On this page" list. Sticky sidebar on desktop, a collapsible box on phones. */
 export default function TableOfContents({ items }: { items: Item[] }) {
+  const label = useMessages().legal.onThisPage;
   const [active, setActive] = useState(items[0]?.id);
 
   // Highlight the section currently near the top of the screen
@@ -53,17 +55,17 @@ export default function TableOfContents({ items }: { items: Item[] }) {
       {/* Phones and tablets */}
       <details className="group rounded-card border border-line bg-white p-2 lg:hidden">
         <summary className="flex cursor-pointer list-none items-center justify-between rounded-xl px-3 py-2 font-display font-medium [&::-webkit-details-marker]:hidden">
-          On this page
+          {label}
           <ChevronDown className="size-4 transition-transform duration-300 group-open:rotate-180" />
         </summary>
-        <nav aria-label="On this page" className="mt-2">
+        <nav aria-label={label} className="mt-2">
           {list()}
         </nav>
       </details>
 
       {/* Desktop */}
-      <nav aria-label="On this page" className="sticky top-28 hidden max-h-[calc(100vh-9rem)] overflow-y-auto lg:block">
-        <p className="mb-3 px-3 text-xs font-semibold tracking-wider text-ink-muted uppercase">On this page</p>
+      <nav aria-label={label} className="sticky top-28 hidden max-h-[calc(100vh-9rem)] overflow-y-auto lg:block">
+        <p className="mb-3 px-3 text-xs font-semibold tracking-wider text-ink-muted uppercase">{label}</p>
         {list()}
       </nav>
     </>

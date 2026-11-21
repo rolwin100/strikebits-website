@@ -3,12 +3,15 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import { useMessages } from "@/i18n/client";
+import { format } from "@/i18n/messages/format";
 
 type Slide = { src: string; alt: string };
 
 const INTERVAL_MS = 5000;
 
 export default function HeroCarousel({ slides }: { slides: Slide[] }) {
+  const m = useMessages();
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
   const reduceMotion = useReducedMotion();
@@ -43,6 +46,7 @@ export default function HeroCarousel({ slides }: { slides: Slide[] }) {
             preload={index === 0}
             sizes="(min-width: 1024px) 50vw, 100vw"
             className="object-cover"
+            loading="eager"
           />
         </motion.div>
       </AnimatePresence>
@@ -58,7 +62,7 @@ export default function HeroCarousel({ slides }: { slides: Slide[] }) {
               key={slide.src}
               type="button"
               onClick={() => setIndex(i)}
-              aria-label={`Show slide ${i + 1}`}
+              aria-label={format(m.hero.showSlide, { n: String(i + 1) })}
               aria-current={i === index}
               className={`h-2 rounded-pill transition-all duration-500 ${
                 i === index ? "w-8 bg-lime" : "w-2 bg-white/60 hover:bg-white"

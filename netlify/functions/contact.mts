@@ -47,21 +47,24 @@ function escapeHtml(value: string) {
     .replace(/'/g, "&#39;");
 }
 
-/** Returns the cleaned enquiry, or an error message for the visitor. */
+/**
+ * Returns the cleaned enquiry, or an error code. The site shows its own text for each code
+ * in the visitor's language (see i18n/messages/en.ts, form.errors), so only codes go out here.
+ */
 function parseEnquiry(input: unknown): Enquiry | string {
-  if (!input || typeof input !== "object") return "Invalid request.";
+  if (!input || typeof input !== "object") return "invalid_request";
   const raw = input as Record<string, unknown>;
 
   const enquiry = {} as Enquiry;
   for (const field of Object.keys(LIMITS) as Field[]) {
     const value = typeof raw[field] === "string" ? (raw[field] as string).trim() : "";
-    if (value.length > LIMITS[field]) return `The ${field} field is too long.`;
+    if (value.length > LIMITS[field]) return "field_too_long";
     enquiry[field] = value;
   }
 
-  if (!enquiry.name) return "Please enter your name.";
-  if (!EMAIL_PATTERN.test(enquiry.email)) return "Please enter a valid email address.";
-  if (!enquiry.message) return "Please tell us about your project.";
+  if (!enquiry.name) return "name_required";
+  if (!EMAIL_PATTERN.test(enquiry.email)) return "email_invalid";
+  if (!enquiry.message) return "message_required";
   // Names end up in the subject line, so keep them to a single line
   enquiry.name = enquiry.name.replace(/[\r\n]+/g, " ");
   return enquiry;
@@ -106,7 +109,7 @@ export default async function handler(req: Request) {
   try {
     body = await req.json();
   } catch {
-    return json(400, { error: "Invalid request." });
+    return json(400, { error: "invalid_request" });
   }
 
   // Honeypot: a hidden field people never see. Bots that fill it get a fake success.
@@ -120,7 +123,7 @@ export default async function handler(req: Request) {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey) {
     console.error("contact: RESEND_API_KEY is not set");
-    return json(500, { error: "The form isn't set up yet." });
+    return json(500, { error: "not_configured" });
   }
 
   const { subject, text, html } = buildEmail(enquiry);
@@ -144,7 +147,7 @@ export default async function handler(req: Request) {
   if (!response.ok) {
     // Logged for us in the Netlify function logs; the visitor gets a generic message
     console.error("contact: Resend error", response.status, await response.text());
-    return json(502, { error: "We couldn't send your message." });
+    return json(502, { error: "send_failed" });
   }
 
   return json(200, { ok: true });

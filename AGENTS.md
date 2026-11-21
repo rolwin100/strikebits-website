@@ -41,20 +41,32 @@ The site is built with `output: "export"`. Everything must work without a server
 
 ## Structure
 
-- `app/`: routes. `layout.tsx` renders the shared Header and Footer, so pages only return their sections.
+- `app/`: routes, split into `(en)` and `[lang]` (see Languages). The shared header and footer come from `app/_shell/RootShell.tsx`, so pages only return their sections.
+- `i18n/`: language config, interface text (`messages/`), translated page content (`content/`), and the client helpers.
 - `components/<Name>/`: one folder per section, exported through `index.ts`.
-- `data/`: all content. Edit copy here, not in components.
-  - `portfolio.ts` (apps on `/portfolio`), `site.ts` (name, contact details, socials, booking link), `services.ts` (drives the header dropdown, footer column, home cards and `/services/<slug>` pages), `stats.ts`, `faqs.ts`, `posts.ts`, `about.ts`, `privacy.ts`
-- `public/`: images. `public/clients/` holds the client logos.
-- `_unused/`: old backups, safe to delete.
+- `data/`: shared data and types (`site.ts` holds contact details and links; the others pair with `i18n/content/`). Edit copy in `i18n/content/en.ts` (page content) or `i18n/messages/en.ts` (buttons, headings), not in components.
 
 ## Routes
 
-`/`, `/about`, `/contact`, `/portfolio`, `/privacy-policy`, `/services`, `/services/<slug>` (five services). Terms and Cookie links point to `/privacy-policy`.
+`/`, `/about`, `/contact`, `/portfolio`, `/privacy-policy`, `/services`, `/services/<slug>` (five services). Terms and Cookie links point to `/privacy-policy`. The same routes exist under `/de/` and `/fr/`.
 
-`/portfolio` lists our own apps (content in `data/portfolio.ts`).
+`/portfolio` lists our own apps (content in `i18n/content/en.ts`).
 
 Not built yet (links to them 404): `/blog`, `/blog/<slug>`.
+
+## Languages (English, German, French)
+
+English is the site root; German and French are `/de/...` and `/fr/...`. It is a hand-rolled setup (no i18n library), following Next's own dictionary guide, because the site is a static export and Proxy (middleware) does not run.
+
+- **Two route trees, one set of pages.** `app/(en)/` is English and `app/[lang]/` is `de`/`fr`; each has its own root layout. Every `page.tsx` is a few lines that call a shared page in `app/_routes/` with a `locale`. A new page needs its shared version in `_routes/` plus a wrapper in both trees. `app/_shell/RootShell.tsx` holds `<html>`, header and footer.
+- **Locale config** is in `i18n/config.ts`: the language list, `localizedHref()` (`/about` becomes `/de/about`) and `translatedLocales`.
+- **Interface text** (headings, buttons, labels, page titles) lives in `i18n/messages/en.ts`, never hard-coded in components. `de.ts` and `fr.ts` hold only what is translated; anything missing falls back to English (`deepMerge`). Server components call `getMessages(locale)`; client components call `useMessages()` / `useLocale()` (set up by `I18nProvider` in `RootShell`).
+- **Page content** (services, FAQs, blog posts, About, portfolio, privacy policy) lives in English in `i18n/content/en.ts`; edit English copy there. `i18n/content/de.ts` and `fr.ts` list only the fields they translate. The `data/` files hold the types and a `get...(locale)` function that lays the translations over the English. Translated lists must keep the English order, because they are matched by position.
+- **Section components** take a `locale` prop from their page. Use `<LocaleLink>` (from `i18n/client`) for internal links so visitors stay in their language; plain `<a>` and `#`/`mailto:` links are left alone.
+- **Not translated yet.** `translatedLocales` in `i18n/config.ts` is `["en"]`. While a language is not in it, its pages show English, are `noindex`, and say `<html lang="en">`. To launch German: fill `de.ts` and `i18n/content/de.ts`, add `"de"` to `translatedLocales`, and then add `hreflang` alternates and browser-language redirects (Netlify `[[redirects]]` on `Accept-Language`).
+- The language menu is `components/Header/LanguageMenu.tsx`. Switching is a normal page load, since the two trees are separate root layouts.
+- The contact function returns error codes (`name_required`, ...); the form shows their text from `form.errors` in the messages.
+- `app/global-not-found.tsx` is the single 404 page (English, no header or footer). It needs `experimental.globalNotFound` in `next.config.ts` because there are two root layouts.
 
 ## Conventions
 

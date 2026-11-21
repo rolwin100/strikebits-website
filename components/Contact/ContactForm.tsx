@@ -2,18 +2,22 @@
 
 import { useState, type ReactNode, type SubmitEvent } from "react";
 import { ArrowUpRight, ChevronDown, LoaderCircle, MailCheck } from "lucide-react";
-import { services } from "@/data/services";
 import { site } from "@/data/site";
-
-// Edit the dropdown options here
-const serviceOptions = [...services.map((s) => s.title), "Something else"];
-const budgetOptions = ["Under $2,000", "$2,000 – $5,000", "$5,000 – $15,000", "$15,000+", "Not sure yet"];
+import { useMessages } from "@/i18n/client";
+// The text is in i18n/messages/en.ts. The budget options are there too.
 
 /**
  * Sends the enquiry to the Netlify Function in netlify/functions/contact.mts,
  * which emails it to the team through Resend.
  * Note: `pnpm dev` does not run Netlify Functions; use `netlify dev` to try the form locally.
  */
+class SendError extends Error {
+  // The function answers with a short code (see netlify/functions/contact.mts); the text for it is in messages
+  constructor(readonly code: string) {
+    super(code);
+  }
+}
+
 async function sendEnquiry(data: Record<string, string>) {
   const response = await fetch("/api/contact", {
     method: "POST",
@@ -22,7 +26,7 @@ async function sendEnquiry(data: Record<string, string>) {
   });
   if (!response.ok) {
     const result = (await response.json().catch(() => null)) as { error?: string } | null;
-    throw new Error(result?.error || "We couldn't send your message.");
+    throw new SendError(result?.error ?? "generic");
   }
 }
 
@@ -59,7 +63,9 @@ function Field({ id, label, required, children }: { id: string; label: string; r
   );
 }
 
-export default function ContactForm() {
+export default function ContactForm({ serviceOptions }: { serviceOptions: string[] }) {
+  const m = useMessages();
+  const t = m.form;
   const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [error, setError] = useState("");
   const sent = status === "sent";
@@ -77,7 +83,9 @@ export default function ContactForm() {
       formElement.reset();
       setStatus("sent");
     } catch (err) {
-      setError(err instanceof Error ? err.message : "We couldn't send your message.");
+      const code = err instanceof SendError ? err.code : "generic";
+      const errors: Record<string, string> = t.errors;
+      setError(errors[code] ?? t.errors.generic);
       setStatus("idle");
     }
   }
@@ -90,10 +98,10 @@ export default function ContactForm() {
           <span className="mx-auto grid size-14 place-items-center rounded-full bg-lime text-pine-900">
             <MailCheck className="size-7" />
           </span>
-          <h3 className="mt-5 text-2xl">Thanks, your message is on its way</h3>
-          <p className="mx-auto mt-3 max-w-md text-ink-soft">{site.emailNote}.</p>
+          <h3 className="mt-5 text-2xl">{t.sentTitle}</h3>
+          <p className="mx-auto mt-3 max-w-md text-ink-soft">{m.contact.replyNote}.</p>
           <button type="button" onClick={() => setStatus("idle")} className="btn btn-line mt-6">
-            Send another message
+            {t.sendAnother}
           </button>
         </div>
       )}
@@ -105,36 +113,36 @@ export default function ContactForm() {
           <input id="contact-website" name="website" type="text" tabIndex={-1} autoComplete="off" />
         </div>
 
-        <Field id="contact-name" label="Your name" required>
-          <input id="contact-name" name="name" type="text" required autoComplete="name" placeholder="Jane Smith" className="input" />
+        <Field id="contact-name" label={t.name} required>
+          <input id="contact-name" name="name" type="text" required autoComplete="name" placeholder={t.namePlaceholder} className="input" />
         </Field>
 
-        <Field id="contact-email" label="Email" required>
-          <input id="contact-email" name="email" type="email" required autoComplete="email" placeholder="jane@yourstore.com" className="input" />
+        <Field id="contact-email" label={t.email} required>
+          <input id="contact-email" name="email" type="email" required autoComplete="email" placeholder={t.emailPlaceholder} className="input" />
         </Field>
 
         <div className="sm:col-span-2">
-          <Field id="contact-company" label="Company or store URL">
-            <input id="contact-company" name="company" type="text" autoComplete="organization" placeholder="yourstore.com" className="input" />
+          <Field id="contact-company" label={t.company}>
+            <input id="contact-company" name="company" type="text" autoComplete="organization" placeholder={t.companyPlaceholder} className="input" />
           </Field>
         </div>
 
-        <Field id="contact-service" label="What do you need?">
-          <Select id="contact-service" name="service" options={serviceOptions} placeholder="Choose a service" />
+        <Field id="contact-service" label={t.service}>
+          <Select id="contact-service" name="service" options={serviceOptions} placeholder={t.servicePlaceholder} />
         </Field>
 
-        <Field id="contact-budget" label="Budget">
-          <Select id="contact-budget" name="budget" options={budgetOptions} placeholder="Choose a range" />
+        <Field id="contact-budget" label={t.budget}>
+          <Select id="contact-budget" name="budget" options={t.budgetOptions} placeholder={t.budgetPlaceholder} />
         </Field>
 
         <div className="sm:col-span-2">
-          <Field id="contact-message" label="Tell us about your project" required>
+          <Field id="contact-message" label={t.message} required>
             <textarea
               id="contact-message"
               name="message"
               required
               rows={6}
-              placeholder="What are you building, and what would success look like?"
+              placeholder={t.messagePlaceholder}
               className="input resize-y"
             />
           </Field>
@@ -142,7 +150,7 @@ export default function ContactForm() {
 
         {error && (
           <p role="alert" className="rounded-xl bg-red-50 px-4 py-3 text-sm text-red-800 sm:col-span-2">
-            {error} Please try again, or email us at{" "}
+            {error} {t.errorTryAgain}{" "}
             <a href={`mailto:${site.email}`} className="font-medium underline underline-offset-4">
               {site.email}
             </a>
@@ -151,7 +159,7 @@ export default function ContactForm() {
         )}
 
         <div className="flex flex-col gap-4 sm:col-span-2 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-ink-muted">{site.emailNote}.</p>
+          <p className="text-sm text-ink-muted">{m.contact.replyNote}.</p>
           <button
             type="submit"
             disabled={status === "sending"}
@@ -159,11 +167,11 @@ export default function ContactForm() {
           >
             {status === "sending" ? (
               <>
-                Sending <LoaderCircle className="size-4 animate-spin" />
+                {t.sending} <LoaderCircle className="size-4 animate-spin" />
               </>
             ) : (
               <>
-                Send message <ArrowUpRight className="size-4" />
+                {t.send} <ArrowUpRight className="size-4" />
               </>
             )}
           </button>

@@ -1,12 +1,18 @@
-import Link from "next/link";
+import { LocaleLink } from "@/i18n/client";
 import { ArrowUpRight } from "lucide-react";
 import Reveal from "../Reveal";
-import { apps, portfolioHero } from "@/data/portfolio";
-import { statusShort } from "./AppCard";
+import { getPortfolio } from "@/data/portfolio";
+import { statusTexts } from "./AppCard";
 import AppLogo from "./AppLogo";
+import type { Locale } from "@/i18n/config";
+import { getMessages } from "@/i18n/messages";
 
 /** Heading panel for the /portfolio page, with quick links to each app card. */
-export default function PortfolioHero() {
+export default function PortfolioHero({ locale }: { locale: Locale }) {
+  const m = getMessages(locale);
+  const { apps, hero: portfolioHero } = getPortfolio(locale);
+  const statusShort = statusTexts(m.portfolio).short;
+
   return (
     <section className="pt-6">
       <div className="wrap">
@@ -27,9 +33,9 @@ export default function PortfolioHero() {
                 <p className="lead">{portfolioHero.intro}</p>
               </Reveal>
               <Reveal margin="0px" delay={0.3} blur={6} className="mt-8">
-                <Link href="/contact" className="btn btn-lime">
-                  Get a quote <ArrowUpRight className="size-4" />
-                </Link>
+                <LocaleLink href="/contact" className="btn btn-lime">
+                  {m.common.getQuote} <ArrowUpRight className="size-4" />
+                </LocaleLink>
               </Reveal>
             </div>
 

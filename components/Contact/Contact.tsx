@@ -3,25 +3,34 @@ import { ArrowUpRight, CalendarCheck, Check, Mail, MapPin, Phone } from "lucide-
 import Reveal from "../Reveal";
 import { GitHubIcon, LinkedInIcon, XIcon } from "../Footer/SocialIcons";
 import ContactForm from "./ContactForm";
+import { getServices } from "@/data/services";
 import { bookingHref, site, telHref } from "@/data/site";
+import type { Locale } from "@/i18n/config";
+import { format, getMessages } from "@/i18n/messages";
 
-// ---- Page content (contact details live in data/site.ts) ----
-const highlights = [site.emailNote, "30-minute consultation call with our team", `Available ${site.phoneNote}`];
+export default function Contact({ locale }: { locale: Locale }) {
+  const m = getMessages(locale);
+  const c = m.contact;
 
-const details = [
-  { icon: Phone, label: "Phone", value: site.phone, note: site.phoneNote, href: telHref(site.phone) },
-  { icon: Mail, label: "Email", value: site.email, note: site.emailNote, href: `mailto:${site.email}` },
-  { icon: MapPin, label: "Address", value: site.address, note: "", href: site.mapUrl },
-];
+  // ---- Page content (contact details live in data/site.ts, text in i18n/messages/en.ts) ----
+  const highlights = [c.replyNote, c.highlightCall, format(c.highlightAvailable, { hours: c.hours })];
 
-const socials = [
-  { icon: LinkedInIcon, label: "LinkedIn", href: site.socials.linkedin },
-  { icon: XIcon, label: "X (Twitter)", href: site.socials.x },
-  { icon: GitHubIcon, label: "GitHub", href: site.socials.github },
-];
-// --------------------------------------------------------------
+  const details = [
+    { icon: Phone, label: c.phone, value: site.phone, note: c.hours, href: telHref(site.phone) },
+    { icon: Mail, label: c.email, value: site.email, note: c.replyNote, href: `mailto:${site.email}` },
+    { icon: MapPin, label: c.address, value: site.address, note: "", href: site.mapUrl },
+  ];
 
-export default function Contact() {
+  const socials = [
+    { icon: LinkedInIcon, label: m.social.linkedin, href: site.socials.linkedin },
+    { icon: XIcon, label: m.social.x, href: site.socials.x },
+    { icon: GitHubIcon, label: m.social.github, href: site.socials.github },
+  ];
+  // --------------------------------------------------------------
+
+  const serviceOptions = [...getServices(locale).map((service) => service.title), m.form.somethingElse];
+  const [requiredBefore, requiredAfter] = c.requiredNote.split("{star}");
+
   return (
     <>
       {/* Page heading */}
@@ -33,17 +42,18 @@ export default function Contact() {
             <div className="relative grid gap-10 lg:grid-cols-[1.4fr_1fr] lg:items-end">
               <div>
                 <Reveal margin="0px" blur={6}>
-                  <span className="tag bg-white/80">Contact</span>
+                  <span className="tag bg-white/80">{c.tag}</span>
                 </Reveal>
                 <Reveal margin="0px" delay={0.1} blur={6}>
                   <h1 className="mt-6 text-4xl leading-[1.05] font-normal sm:text-5xl xl:text-[3.6rem]">
-                    Get in <span className="font-bold">touch.</span>
+                    {c.headingLight}
+                    <span className="font-bold">{c.headingBold}</span>
                   </h1>
                 </Reveal>
                 <Reveal margin="0px" delay={0.2} blur={6}>
                   <p className="lead">
-                    <span className="font-medium text-ink">Ready to transform your e-commerce business?</span> Let&apos;s
-                    discuss your project and how we can help you achieve your goals with our Shopify expertise.
+                    <span className="font-medium text-ink">{c.leadBold}</span>
+                    {c.lead}
                   </p>
                 </Reveal>
               </div>
@@ -74,7 +84,7 @@ export default function Contact() {
               <div className="relative overflow-hidden rounded-card bg-pine-900 p-8 text-pine-200 md:p-10">
                 <div className="dots pointer-events-none absolute inset-0 opacity-30 mask-[linear-gradient(to_bottom,black,transparent_60%)]" />
                 <div className="relative">
-                  <h2 className="text-2xl text-white">Contact details</h2>
+                  <h2 className="text-2xl text-white">{c.detailsTitle}</h2>
 
                   <ul className="mt-8 space-y-6">
                     {details.map(({ icon: Icon, label, value, note, href }) => (
@@ -84,7 +94,7 @@ export default function Contact() {
                         </span>
                         <div>
                           <p className="text-xs font-semibold tracking-wider text-pine-200 uppercase">{label}</p>
-                          <a href={href} className="mt-1 block break-words text-lg text-white transition hover:text-lime">
+                          <a href={href} className="mt-1 block wrap-break-word text-lg text-white transition hover:text-lime">
                             {value}
                           </a>
                           {note && <p className="mt-0.5 text-sm text-pine-200">{note}</p>}
@@ -108,7 +118,7 @@ export default function Contact() {
                     </div>
                     <Image
                       src="/shopify-partners.webp"
-                      alt="Shopify Partners"
+                      alt={c.partnersAlt}
                       width={600}
                       height={253}
                       className="h-12 w-auto opacity-90 brightness-0 invert"
@@ -124,12 +134,10 @@ export default function Contact() {
                 <span className="grid size-12 place-items-center rounded-full bg-lime text-pine-900">
                   <CalendarCheck className="size-6" />
                 </span>
-                <h2 className="mt-6 text-2xl">Schedule a meeting</h2>
-                <p className="mt-2 text-ink-soft">
-                  Prefer to have a direct conversation? Book a 30-minute consultation call with our team.
-                </p>
+                <h2 className="mt-6 text-2xl">{c.scheduleTitle}</h2>
+                <p className="mt-2 text-ink-soft">{c.scheduleText}</p>
                 <a href={bookingHref} className="btn btn-pine mt-6">
-                  Book a call <ArrowUpRight className="size-4" />
+                  {c.bookCall} <ArrowUpRight className="size-4" />
                 </a>
               </div>
             </Reveal>
@@ -138,11 +146,13 @@ export default function Contact() {
           {/* Form (shown first on phones, on the right on desktop) */}
           <Reveal margin="0px" delay={0.4} y={32} className="order-first lg:order-last">
             <div className="rounded-card border border-line bg-white p-6 shadow-card sm:p-8 md:p-10">
-              <h2 className="text-2xl md:text-3xl">Send us a message</h2>
+              <h2 className="text-2xl md:text-3xl">{c.formTitle}</h2>
               <p className="mt-2 mb-8 text-ink-soft">
-                Fields marked <span className="text-pine-600">*</span> are required.
+                {requiredBefore}
+                <span className="text-pine-600">*</span>
+                {requiredAfter}
               </p>
-              <ContactForm />
+              <ContactForm serviceOptions={serviceOptions} />
             </div>
           </Reveal>
         </div>

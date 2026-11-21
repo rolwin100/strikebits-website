@@ -2,6 +2,8 @@ import { CalendarDays, Mail, MapPin, Phone } from "lucide-react";
 import Reveal from "../Reveal";
 import TableOfContents from "./TableOfContents";
 import { site, telHref } from "@/data/site";
+import type { Locale } from "@/i18n/config";
+import { format, getMessages } from "@/i18n/messages";
 
 export type LegalBlock = { p: string } | { list: string[] };
 
@@ -30,7 +32,8 @@ const contact = [
 ];
 
 /** Layout for legal pages (privacy policy, terms, cookie policy). */
-export default function LegalPage({ content }: { content: LegalDocument }) {
+export default function LegalPage({ content, locale }: { content: LegalDocument; locale: Locale }) {
+  const t = getMessages(locale).legal;
   const { title, updated, intro, sections } = content;
 
   return (
@@ -42,7 +45,7 @@ export default function LegalPage({ content }: { content: LegalDocument }) {
             <div className="dots pointer-events-none absolute top-0 left-0 h-full w-1/2 mask-[radial-gradient(ellipse_at_top_left,black,transparent_65%)]" />
             <div className="relative">
               <Reveal margin="0px" blur={6}>
-                <span className="tag bg-white/80">Legal</span>
+                <span className="tag bg-white/80">{t.tag}</span>
               </Reveal>
               <Reveal margin="0px" delay={0.1} blur={6}>
                 <h1 className="mt-6 text-4xl leading-[1.05] font-normal sm:text-5xl xl:text-[3.6rem]">
@@ -52,7 +55,7 @@ export default function LegalPage({ content }: { content: LegalDocument }) {
               <Reveal margin="0px" delay={0.2}>
                 <p className="mt-6 inline-flex items-center gap-2 rounded-pill bg-white/70 px-4 py-2 text-sm font-medium text-ink backdrop-blur">
                   <CalendarDays className="size-4 text-pine-600" />
-                  Last updated: {updated}
+                  {format(t.lastUpdated, { date: updated })}
                 </p>
               </Reveal>
             </div>
@@ -69,8 +72,8 @@ export default function LegalPage({ content }: { content: LegalDocument }) {
 
           <article className="max-w-3xl">
             <div className="space-y-4 text-lg leading-relaxed text-ink-soft">
-              {intro.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
+              {intro.map((paragraph, i) => (
+                <p key={i}>{paragraph}</p>
               ))}
             </div>
 
@@ -87,8 +90,8 @@ export default function LegalPage({ content }: { content: LegalDocument }) {
                       <p key={k}>{block.p}</p>
                     ) : (
                       <ul key={k} className="space-y-2.5">
-                        {block.list.map((item) => (
-                          <li key={item} className="flex gap-3">
+                        {block.list.map((item, j) => (
+                          <li key={j} className="flex gap-3">
                             <span className="mt-[0.6em] size-1.5 shrink-0 rounded-full bg-pine-400" />
                             {item}
                           </li>

@@ -1,24 +1,21 @@
-import { services as allServices } from "@/data/services";
 import type { LucideIcon } from "lucide-react";
+import { serviceIcons } from "@/data/serviceIcons";
 
-export type NavLink = { label: string; href: string };
-export type ServiceLink = NavLink & { icon: LucideIcon; text: string };
+/** A top-level menu item. The label comes from messages (nav.<key>). */
+export type NavLink = { key: "home" | "portfolio" | "about" | "contact"; href: string };
 
-// Services dropdown items come from data/services.ts
-export const services: ServiceLink[] = allServices.map((s) => ({
-  label: s.title,
-  href: s.href,
-  icon: s.icon,
-  text: s.short,
-}));
+/** A services dropdown item. The server fills in the text for the current language. */
+export type HeaderService = { slug: string; label: string; text: string; href: string };
+
+export const serviceIcon = (slug: string): LucideIcon | undefined => serviceIcons[slug];
 
 // Edit menu items here
 export const links: NavLink[] = [
-  { label: "Home", href: "/" },
+  { key: "home", href: "/" },
   // "Services" dropdown is inserted after Home
-  { label: "Portfolio", href: "/portfolio" },
-  { label: "About", href: "/about" },
-  { label: "Contact", href: "/contact" },
+  { key: "portfolio", href: "/portfolio" },
+  { key: "about", href: "/about" },
+  { key: "contact", href: "/contact" },
 ];
 
-export const cta: NavLink = { label: "Get a quote", href: "/contact" };
+export const cta = { key: "getQuote", href: "/contact" } as const;

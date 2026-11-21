@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Reveal from "../Reveal";
+import type { Locale } from "@/i18n/config";
+import { getMessages } from "@/i18n/messages";
 
 // Edit client logos here (files live in /public/clients).
 // `height` evens out how big each logo looks — adjust if one looks too big or small.
@@ -32,14 +34,16 @@ function LogoRow({ hidden = false }: { hidden?: boolean }) {
   );
 }
 
-export default function Clients() {
+export default function Clients({ locale }: { locale: Locale }) {
+  const m = getMessages(locale);
+
   return (
     <section aria-labelledby="clients-heading">
       <div className="wrap">
         <Reveal className="flex items-center gap-4">
           <span className="h-px flex-1 bg-line" />
           <h2 id="clients-heading" className="tag shrink-0 font-sans">
-            Trusted by growing Shopify brands
+            {m.clients.heading}
           </h2>
           <span className="h-px flex-1 bg-line" />
         </Reveal>

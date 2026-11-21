@@ -1,29 +1,30 @@
-import Link from "next/link";
+import { LocaleLink } from "@/i18n/client";
 import { ArrowUpRight } from "lucide-react";
 import Reveal from "../Reveal";
 import FaqAccordion from "./FaqAccordion";
-import { faqs } from "@/data/faqs";
+import { getFaqs } from "@/data/faqs";
+import type { Locale } from "@/i18n/config";
+import { getMessages } from "@/i18n/messages";
 
-export default function Faq({ showContactButton = true }: { showContactButton?: boolean }) {
+export default function Faq({ locale, showContactButton = true }: { locale: Locale; showContactButton?: boolean }) {
+  const t = getMessages(locale).faq;
+
   return (
     <section id="faq" className="section">
       <div className="wrap grid gap-12 lg:grid-cols-[1fr_1.5fr] lg:gap-20">
         <Reveal blur={6} className="lg:sticky lg:top-32 lg:self-start">
-          <span className="tag">FAQ</span>
-          <h2 className="heading text-balance">Questions, answered</h2>
-          <p className="lead">
-            Everything you need to know about working with us. Can&apos;t find your answer? We&apos;re
-            happy to help.
-          </p>
+          <span className="tag">{t.tag}</span>
+          <h2 className="heading text-balance">{t.heading}</h2>
+          <p className="lead">{t.lead}</p>
           {showContactButton && (
-            <Link href="/contact" className="btn btn-pine mt-8">
-              Ask us a question <ArrowUpRight className="size-4" />
-            </Link>
+            <LocaleLink href="/contact" className="btn btn-pine mt-8">
+              {t.ask} <ArrowUpRight className="size-4" />
+            </LocaleLink>
           )}
         </Reveal>
 
         <Reveal delay={0.15} y={32} blur={6}>
-          <FaqAccordion faqs={faqs} />
+          <FaqAccordion faqs={getFaqs(locale)} />
         </Reveal>
       </div>
     </section>

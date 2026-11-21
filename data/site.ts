@@ -1,13 +1,12 @@
 // Company and contact details, used by the footer and the contact page.
+// Text that gets translated (reply time, opening hours) is in i18n/messages/en.ts.
 // Taken from the current strikebits.com contact page.
 export const site = {
   name: "StrikeBits",
   // Name used in legal documents (as in the current privacy policy)
   legalName: "StrikeBits Labs",
   email: "hello@strikebits.com",
-  emailNote: "We usually reply within 24 hours",
   phone: "+91 87621 32929",
-  phoneNote: "Mon – Fri, 9am – 6pm",
   address: "Bengaluru, KA, India",
   mapUrl: "https://www.google.com/maps/search/?api=1&query=Bengaluru%2C+Karnataka%2C+India",
   // TODO: add your scheduling link (for example Calendly). While this is empty,

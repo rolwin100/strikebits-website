@@ -1,6 +1,10 @@
-// Content for the /portfolio page: StrikeBits' own Shopify apps.
-
 import type { LucideIcon } from "lucide-react";
+import type { Locale } from "@/i18n/config";
+import { contentOverrides } from "@/i18n/content";
+import { en } from "@/i18n/content/en";
+import { deepMerge } from "@/i18n/merge";
+
+// The portfolio text and apps are in i18n/content/en.ts (English) and de.ts / fr.ts (translations).
 
 export type AppStatus = "live" | "coming-soon";
 
@@ -23,48 +27,7 @@ export type PortfolioApp = {
   appStoreUrl?: string;
 };
 
-export const portfolioHero = {
-  tag: "Portfolio",
-  /** [light part, bold part] of the heading */
-  headline: ["Apps we've", "built and shipped."] as [string, string],
-  intro:
-    "We build and run our own apps on the Shopify App Store. Each one does one job well, installs in minutes and is supported by the people who built it.",
-};
+export type PortfolioContent = typeof en.portfolio;
 
-export const apps: PortfolioApp[] = [
-  {
-    slug: "sugar-rush",
-    name: "Sugar Rush",
-    // Taken from the Sugar Rush App Store listing
-    tagline: "Upsell and cross-sell in a popup at add to cart. Shoppers add discounted extras with one tap.",
-    features: [
-      "Add-to-cart popup with one-tap adds and a variant picker",
-      "Upsell widgets on product pages, in the cart and in a slide-out cart drawer",
-      "Automatic percentage or fixed discounts at checkout",
-      "Views, adds and revenue tracked for every upsell",
-    ],
-    status: "live",
-    logo: "/apps/sugar-rush.png",
-    appStoreUrl: "https://apps.shopify.com/sugar-rush-upsell",
-  },
-  {
-    slug: "sugar-ship",
-    name: "Sugar Ship",
-    // TODO: confirm the final name and pitch before launch
-    tagline: "Live carrier shipping rates at checkout, for merchants shipping anywhere in the world.",
-    features: [
-      "Real-time rates from multiple carriers",
-      "Works for stores in any country",
-      "Available in English, French and German",
-    ],
-    status: "coming-soon",
-    logo: "/apps/sugar-ship.png",
-  },
-];
-
-export const portfolioCta = {
-  /** [light part, bold part] of the heading */
-  headline: ["Need a custom app?", "Let's build it."] as [string, string],
-  text: "Tell us what your store needs. We'll scope it, build it and take it through App Store review if it's going public.",
-  button: { label: "Get a quote", href: "/contact" },
-};
+/** Portfolio page content in a language: translations from i18n/content laid over the English text (same order) */
+export const getPortfolio = (locale: Locale): PortfolioContent => deepMerge(en.portfolio, contentOverrides[locale].portfolio);

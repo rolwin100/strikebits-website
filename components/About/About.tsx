@@ -1,15 +1,15 @@
 import { Fragment } from "react";
 import Image from "next/image";
-import Link from "next/link";
+import { LocaleLink } from "@/i18n/client";
 import { ArrowUpRight, MapPin, UserRound } from "lucide-react";
 import Reveal from "../Reveal";
 import CountUp from "../Stats/CountUp";
 import { LinkedInIcon } from "../Footer/SocialIcons";
-import { story, team, values } from "@/data/about";
+import { getAbout } from "@/data/about";
 import { site } from "@/data/site";
 import { stats } from "@/data/stats";
-
-const heroPhoto = { src: "/about-us.webp", alt: "A team working together around a table with laptops and notebooks" };
+import type { Locale } from "@/i18n/config";
+import { format, getMessages } from "@/i18n/messages";
 
 /** Turns "plain **highlighted** plain" into text with the highlighted parts in dark ink. */
 function Highlighted({ text }: { text: string }) {
@@ -28,7 +28,12 @@ function Highlighted({ text }: { text: string }) {
   );
 }
 
-export default function About() {
+export default function About({ locale }: { locale: Locale }) {
+  const m = getMessages(locale);
+  const t = m.about;
+  const { story, team, values } = getAbout(locale);
+  const heroPhoto = { src: "/about-us.webp", alt: t.heroAlt };
+
   return (
     <>
       {/* Page heading */}
@@ -39,26 +44,24 @@ export default function About() {
 
             <div className="relative flex flex-col justify-center px-6 py-14 sm:px-10 md:py-20 lg:px-14 xl:px-16">
               <Reveal margin="0px" blur={6}>
-                <span className="tag bg-white/80">About us</span>
+                <span className="tag bg-white/80">{t.tag}</span>
               </Reveal>
               <Reveal margin="0px" delay={0.1} blur={6}>
                 <h1 className="mt-6 max-w-[16ch] text-4xl leading-[1.05] font-normal sm:text-5xl xl:text-[3.6rem]">
-                  The Shopify team behind <span className="font-bold">growing brands.</span>
+                  {t.headlineLight}
+                  <span className="font-bold">{t.headlineBold}</span>
                 </h1>
               </Reveal>
               <Reveal margin="0px" delay={0.2} blur={6}>
-                <p className="lead">
-                  We design, build and support custom Shopify apps, stores and themes for e&#8209;commerce
-                  businesses.
-                </p>
+                <p className="lead">{t.lead}</p>
               </Reveal>
               <Reveal margin="0px" delay={0.3} blur={6} className="mt-8 flex flex-wrap items-center gap-3">
-                <Link href="/contact" className="btn btn-lime">
-                  Get in touch <ArrowUpRight className="size-4" />
-                </Link>
-                <Link href="/portfolio" className="btn btn-line">
-                  View our work
-                </Link>
+                <LocaleLink href="/contact" className="btn btn-lime">
+                  {t.getInTouch} <ArrowUpRight className="size-4" />
+                </LocaleLink>
+                <LocaleLink href="/portfolio" className="btn btn-line">
+                  {m.common.viewOurWork}
+                </LocaleLink>
               </Reveal>
             </div>
 
@@ -78,7 +81,7 @@ export default function About() {
                   <MapPin className="size-4" />
                 </span>
                 <p className="text-sm leading-snug text-ink-soft">
-                  Based in
+                  {t.basedIn}
                   <br />
                   <span className="font-semibold text-ink">{site.address}</span>
                 </p>
@@ -86,7 +89,7 @@ export default function About() {
 
               <Image
                 src="/shopify-partners.webp"
-                alt="Shopify Partners"
+                alt={m.hero.partnersAlt}
                 width={600}
                 height={253}
                 className="absolute right-3 bottom-3 hidden h-14 w-auto brightness-0 drop-shadow-[0_1px_2px_rgb(0_0_0/0.4)] invert sm:block"
@@ -101,8 +104,8 @@ export default function About() {
         <div className="wrap">
           <div className="grid gap-10 lg:grid-cols-[1fr_1.6fr] lg:gap-20">
             <Reveal blur={6}>
-              <span className="tag">Our story</span>
-              <h2 className="heading text-balance">Specialists in Shopify, by choice</h2>
+              <span className="tag">{t.storyTag}</span>
+              <h2 className="heading text-balance">{t.storyHeading}</h2>
             </Reveal>
 
             <Reveal delay={0.1} blur={6}>
@@ -110,8 +113,8 @@ export default function About() {
                 <Highlighted text={story.lead} />
               </p>
               <div className="mt-8 grid gap-6 text-ink-soft sm:grid-cols-2">
-                {story.paragraphs.map((paragraph) => (
-                  <p key={paragraph} className="leading-relaxed">
+                {story.paragraphs.map((paragraph, i) => (
+                  <p key={i} className="leading-relaxed">
                     {paragraph}
                   </p>
                 ))}
@@ -122,18 +125,18 @@ export default function About() {
           <dl className="mt-16 grid grid-cols-2 border-t border-line lg:grid-cols-4">
             {stats.map((s, i) => (
               <Reveal
-                key={s.label}
+                key={i}
                 delay={0.1 + i * 0.1}
                 className={`flex flex-col gap-3 py-8 sm:flex-row sm:items-center sm:gap-4 lg:py-10 ${
                   i % 2 === 1 ? "border-l border-line pl-6 sm:pl-8" : "pr-6"
                 } ${i >= 2 ? "border-t border-line lg:border-t-0" : ""} ${i === 2 ? "lg:border-l lg:pl-8" : ""}`}
               >
-                <dt className="sr-only">{s.label}</dt>
+                <dt className="sr-only">{m.stats.labels[i]}</dt>
                 <dd className="font-display text-5xl leading-none font-semibold tracking-tight text-ink md:text-6xl">
                   <CountUp value={s.value} suffix={s.suffix} />
                 </dd>
                 <dd aria-hidden="true" className="max-w-36 text-sm leading-snug text-ink-soft md:text-base">
-                  {s.label}
+                  {m.stats.labels[i]}
                 </dd>
               </Reveal>
             ))}
@@ -146,13 +149,13 @@ export default function About() {
         <div className="dots pointer-events-none absolute top-0 left-0 h-80 w-1/2 mask-[radial-gradient(ellipse_at_top_left,black,transparent_70%)]" />
         <div className="wrap relative">
           <Reveal blur={6} className="mx-auto max-w-2xl text-center">
-            <span className="tag">What we value</span>
-            <h2 className="heading text-balance">How we work with every client</h2>
+            <span className="tag">{t.valuesTag}</span>
+            <h2 className="heading text-balance">{t.valuesHeading}</h2>
           </Reveal>
 
           <div className="mt-14 grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
             {values.map(({ icon: Icon, title, text, color }, i) => (
-              <Reveal key={title} delay={0.1 + i * 0.1} y={32} blur={6} className="h-full">
+              <Reveal key={i} delay={0.1 + i * 0.1} y={32} blur={6} className="h-full">
                 <article className={`card-pastel ${color} h-full xl:p-8`}>
                   <div className="chip-icon">
                     <Icon className="size-6" strokeWidth={1.8} />
@@ -171,12 +174,10 @@ export default function About() {
         <div className="wrap">
           <Reveal blur={6} className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div>
-              <span className="tag">The team</span>
-              <h2 className="heading max-w-xl text-balance">The people who build your project</h2>
+              <span className="tag">{t.teamTag}</span>
+              <h2 className="heading max-w-xl text-balance">{t.teamHeading}</h2>
             </div>
-            <p className="max-w-md text-ink-soft md:text-right">
-              Developers, designers and e&#8209;commerce specialists who work on Shopify every day.
-            </p>
+            <p className="max-w-md text-ink-soft md:text-right">{t.teamText}</p>
           </Reveal>
 
           <div className="mt-14 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
@@ -207,7 +208,7 @@ export default function About() {
                         href={member.linkedin}
                         target="_blank"
                         rel="noopener noreferrer"
-                        aria-label={`${member.name} on LinkedIn (opens in a new tab)`}
+                        aria-label={format(t.linkedinAria, { name: member.name })}
                         className="grid size-9 shrink-0 place-items-center rounded-full border border-line text-ink-soft transition hover:border-pine-400 hover:text-pine-700"
                       >
                         <LinkedInIcon />
