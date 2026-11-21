@@ -52,7 +52,7 @@ function Dropdown({ pathname, tone = "light", direction = "down", fullName = fal
         aria-expanded={open}
         aria-haspopup="true"
         aria-label={`${m.language.switchTo}: ${native}`}
-        className={`inline-flex items-center gap-1.5 rounded-pill border px-3 py-2.5 text-sm font-medium transition ${buttonTone[tone]}`}
+        className={`inline-flex cursor-pointer items-center gap-1.5 rounded-pill border px-3 py-2.5 text-sm font-medium transition ${buttonTone[tone]}`}
       >
         <Globe className="size-4" />
         {fullName ? native : short}
