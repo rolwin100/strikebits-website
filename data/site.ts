@@ -13,7 +13,7 @@ export const site = {
   // the "Book a call" button opens an email asking for a call instead.
   bookingUrl: "",
   socials: {
-    linkedin: "#", // TODO: your LinkedIn page
+    linkedin: "https://www.linkedin.com/company/strike-bits",
     x: "#", // TODO: your X profile
     github: "#", // TODO: your GitHub organisation
   },

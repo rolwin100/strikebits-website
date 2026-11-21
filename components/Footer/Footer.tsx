@@ -100,6 +100,7 @@ export default function Footer({ locale }: { locale: Locale }) {
                   key={label}
                   href={href}
                   aria-label={label}
+                  {...(href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {})}
                   className="grid size-10 place-items-center rounded-full border border-white/15 text-pine-100 transition hover:border-lime hover:bg-lime hover:text-pine-900"
                 >
                   <SocialIcon />
