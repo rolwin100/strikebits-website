@@ -1,4 +1,4 @@
-import type { Locale } from "../config";
+import type { Locale } from "@/i18n/config";
 import type { ContentOverrides } from "./types";
 import { de } from "./de";
 import { fr } from "./fr";

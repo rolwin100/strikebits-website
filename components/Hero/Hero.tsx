@@ -4,9 +4,9 @@ import { LocaleLink } from "@/i18n/client";
 import Reveal from "../Reveal";
 import HeroCarousel from "./HeroCarousel";
 import type { Locale } from "@/i18n/config";
-import { getMessages } from "@/i18n/messages";
+import { getMessages } from "@/i18n/translations/messages";
 
-// ---- Edit hero content here (the text is in i18n/messages/en.ts) ----
+// ---- Edit hero content here (the text is in i18n/translations/messages/en.ts) ----
 const slideImages = ["/banner-img-1.webp", "/banner-img-2.webp", "/banner-img-3.webp"];
 const trustIcons = [ShoppingBag, Gauge];
 

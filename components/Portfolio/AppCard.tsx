@@ -2,7 +2,7 @@ import { ArrowUpRight, Check, Clock } from "lucide-react";
 import type { AppStatus, PortfolioApp } from "@/data/portfolio";
 import AppLogo from "./AppLogo";
 import type { Locale } from "@/i18n/config";
-import { getMessages, type Messages } from "@/i18n/messages";
+import { getMessages, type Messages } from "@/i18n/translations/messages";
 
 /** Status text for an app: the full label, or a short form for tight spaces (hero quick links) */
 export function statusTexts(t: Messages["portfolio"]): { label: Record<AppStatus, string>; short: Record<AppStatus, string> } {

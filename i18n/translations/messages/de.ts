@@ -1,4 +1,4 @@
-import type { DeepPartial } from "../merge";
+import type { DeepPartial } from "@/i18n/merge";
 import type { Messages } from "./en";
 
 // German interface text. Anything not listed here shows in English.

@@ -7,11 +7,11 @@ import ServiceVisual from "./ServiceVisual";
 import { getServices, type Service } from "@/data/services";
 import { serviceIcons } from "@/data/serviceIcons";
 import type { Locale } from "@/i18n/config";
-import { format, getMessages } from "@/i18n/messages";
+import { format, getMessages } from "@/i18n/translations/messages";
 
 const pastel = ["bg-sage", "bg-butter", "bg-peach", "bg-sky"];
 
-/** Full page for one service. Content comes from i18n/content/en.ts (services). */
+/** Full page for one service. Content comes from i18n/translations/content/en.ts (services). */
 export default function ServicePage({ locale, service }: { locale: Locale; service: Service }) {
   const m = getMessages(locale);
   const t = m.servicePage;

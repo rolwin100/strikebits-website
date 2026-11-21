@@ -4,7 +4,7 @@ import { useState, type ReactNode, type SubmitEvent } from "react";
 import { ArrowUpRight, ChevronDown, LoaderCircle, MailCheck } from "lucide-react";
 import { site } from "@/data/site";
 import { useMessages } from "@/i18n/client";
-// The text is in i18n/messages/en.ts. The budget options are there too.
+// The text is in i18n/translations/messages/en.ts. The budget options are there too.
 
 /**
  * Sends the enquiry to the Netlify Function in netlify/functions/contact.mts,

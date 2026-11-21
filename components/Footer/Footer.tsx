@@ -7,9 +7,9 @@ import { LanguageDropdown } from "../Header/LanguageMenu";
 import { getServices } from "@/data/services";
 import { bookingHref, site, telHref } from "@/data/site";
 import type { Locale } from "@/i18n/config";
-import { getMessages } from "@/i18n/messages";
+import { getMessages } from "@/i18n/translations/messages";
 
-// ---- Footer content (items marked TODO need your real details; the text is in i18n/messages/en.ts) ----
+// ---- Footer content (items marked TODO need your real details; the text is in i18n/translations/messages/en.ts) ----
 const YEAR = 2026;
 
 // Contact details and social links come from data/site.ts

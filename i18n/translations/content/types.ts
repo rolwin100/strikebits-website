@@ -1,4 +1,4 @@
-import type { DeepPartial } from "../merge";
+import type { DeepPartial } from "@/i18n/merge";
 import type { AboutContent } from "@/data/about";
 import type { Faq } from "@/data/faqs";
 import type { Post } from "@/data/posts";

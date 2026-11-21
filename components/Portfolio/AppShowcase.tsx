@@ -2,7 +2,7 @@ import Reveal from "../Reveal";
 import AppCard from "./AppCard";
 import { getPortfolio } from "@/data/portfolio";
 import type { Locale } from "@/i18n/config";
-import { getMessages } from "@/i18n/messages";
+import { getMessages } from "@/i18n/translations/messages";
 
 // Pastels rotate in the site order: sage, butter, peach, sky
 const tones = ["bg-sage", "bg-butter", "bg-peach", "bg-sky"];

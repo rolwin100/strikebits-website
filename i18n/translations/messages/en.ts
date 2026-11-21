@@ -5,7 +5,7 @@
  *   translated; anything missing falls back to the English below.
  * - Keep the same keys and, for lists, the same order in every language.
  * - Page content that lives in data/ (services, FAQs, privacy policy...) is
- *   translated separately, see i18n/content.
+ *   translated separately, see i18n/translations/content.
  */
 export const en = {
   site: {

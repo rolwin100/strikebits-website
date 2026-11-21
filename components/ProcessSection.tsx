@@ -2,9 +2,9 @@ import { ArrowUpRight, Check, Layers, PenLine, Rocket, Search, type LucideIcon }
 import { LocaleLink } from "@/i18n/client";
 import Reveal from "./Reveal";
 import type { Locale } from "@/i18n/config";
-import { format, getMessages } from "@/i18n/messages";
+import { format, getMessages } from "@/i18n/translations/messages";
 
-// Edit the look of each step here; its text is in i18n/messages/en.ts (process.steps), in the same order
+// Edit the look of each step here; its text is in i18n/translations/messages/en.ts (process.steps), in the same order
 const steps: { step: string; color: string; icon: LucideIcon }[] = [
   { step: "01", color: "bg-sage", icon: Search },
   { step: "02", color: "bg-butter", icon: PenLine },

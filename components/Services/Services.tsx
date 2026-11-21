@@ -4,7 +4,7 @@ import Reveal from "../Reveal";
 import { getServices } from "@/data/services";
 import { serviceIcons } from "@/data/serviceIcons";
 import type { Locale } from "@/i18n/config";
-import { getMessages } from "@/i18n/messages";
+import { getMessages } from "@/i18n/translations/messages";
 
 /** Service cards. `showHeader={false}` hides the heading (used on the /services page, which has its own). */
 export default function Services({ locale, showHeader = true }: { locale: Locale; showHeader?: boolean }) {

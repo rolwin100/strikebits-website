@@ -6,13 +6,13 @@ import ContactForm from "./ContactForm";
 import { getServices } from "@/data/services";
 import { bookingHref, site, telHref } from "@/data/site";
 import type { Locale } from "@/i18n/config";
-import { format, getMessages } from "@/i18n/messages";
+import { format, getMessages } from "@/i18n/translations/messages";
 
 export default function Contact({ locale }: { locale: Locale }) {
   const m = getMessages(locale);
   const c = m.contact;
 
-  // ---- Page content (contact details live in data/site.ts, text in i18n/messages/en.ts) ----
+  // ---- Page content (contact details live in data/site.ts, text in i18n/translations/messages/en.ts) ----
   const highlights = [c.replyNote, c.highlightCall, format(c.highlightAvailable, { hours: c.hours })];
 
   const details = [

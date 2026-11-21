@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { useMessages } from "@/i18n/client";
-import { format } from "@/i18n/messages/format";
+import { format } from "@/i18n/translations/messages/format";
 
 type Slide = { src: string; alt: string };
 

@@ -4,7 +4,7 @@ import Reveal from "../Reveal";
 import CountUp from "./CountUp";
 import { stats } from "@/data/stats";
 import type { Locale } from "@/i18n/config";
-import { getMessages } from "@/i18n/messages";
+import { getMessages } from "@/i18n/translations/messages";
 
 export default function Stats({ locale }: { locale: Locale }) {
   const t = getMessages(locale).stats;

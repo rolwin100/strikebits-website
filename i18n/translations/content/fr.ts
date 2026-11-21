@@ -1,6 +1,6 @@
 import type { ContentOverrides } from "./types";
 
-// French page content. Lists follow the same order as i18n/content/en.ts; anything missing shows in English.
+// French page content. Lists follow the same order as i18n/translations/content/en.ts; anything missing shows in English.
 // The privacy policy is not translated here: it is a legal text and should be translated by a professional.
 export const fr: ContentOverrides = {
   services: [

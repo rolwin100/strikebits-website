@@ -3,7 +3,7 @@
 import { createContext, useContext, type ComponentProps } from "react";
 import Link from "next/link";
 import { localizedHref, type Locale } from "./config";
-import type { Messages } from "./messages";
+import type { Messages } from "@/i18n/translations/messages";
 
 type I18n = { locale: Locale; messages: Messages };
 

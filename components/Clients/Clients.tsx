@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Reveal from "../Reveal";
 import type { Locale } from "@/i18n/config";
-import { getMessages } from "@/i18n/messages";
+import { getMessages } from "@/i18n/translations/messages";
 
 // Edit client logos here (files live in /public/clients).
 // `height` evens out how big each logo looks — adjust if one looks too big or small.

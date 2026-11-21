@@ -5,7 +5,7 @@ import { getPortfolio } from "@/data/portfolio";
 import { statusTexts } from "./AppCard";
 import AppLogo from "./AppLogo";
 import type { Locale } from "@/i18n/config";
-import { getMessages } from "@/i18n/messages";
+import { getMessages } from "@/i18n/translations/messages";
 
 /** Heading panel for the /portfolio page, with quick links to each app card. */
 export default function PortfolioHero({ locale }: { locale: Locale }) {

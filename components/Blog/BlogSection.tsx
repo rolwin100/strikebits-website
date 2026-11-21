@@ -3,7 +3,7 @@ import { ArrowRight, ArrowUpRight } from "lucide-react";
 import Reveal from "../Reveal";
 import { getPosts } from "@/data/posts";
 import type { Locale } from "@/i18n/config";
-import { getMessages } from "@/i18n/messages";
+import { getMessages } from "@/i18n/translations/messages";
 
 const formatDate = (iso: string, locale: Locale) =>
   new Date(iso).toLocaleDateString(locale === "en" ? "en-GB" : locale, {

@@ -3,7 +3,7 @@ import Reveal from "../Reveal";
 import TableOfContents from "./TableOfContents";
 import { site, telHref } from "@/data/site";
 import type { Locale } from "@/i18n/config";
-import { format, getMessages } from "@/i18n/messages";
+import { format, getMessages } from "@/i18n/translations/messages";
 
 export type LegalBlock = { p: string } | { list: string[] };
 

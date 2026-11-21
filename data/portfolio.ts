@@ -1,10 +1,10 @@
 import type { LucideIcon } from "lucide-react";
 import type { Locale } from "@/i18n/config";
-import { contentOverrides } from "@/i18n/content";
-import { en } from "@/i18n/content/en";
+import { contentOverrides } from "@/i18n/translations/content";
+import { en } from "@/i18n/translations/content/en";
 import { deepMerge } from "@/i18n/merge";
 
-// The portfolio text and apps are in i18n/content/en.ts (English) and de.ts / fr.ts (translations).
+// The portfolio text and apps are in i18n/translations/content/en.ts (English) and de.ts / fr.ts (translations).
 
 export type AppStatus = "live" | "coming-soon";
 
@@ -29,5 +29,5 @@ export type PortfolioApp = {
 
 export type PortfolioContent = typeof en.portfolio;
 
-/** Portfolio page content in a language: translations from i18n/content laid over the English text (same order) */
+/** Portfolio page content in a language: translations from i18n/translations/content laid over the English text (same order) */
 export const getPortfolio = (locale: Locale): PortfolioContent => deepMerge(en.portfolio, contentOverrides[locale].portfolio);

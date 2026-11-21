@@ -1,5 +1,5 @@
-import { deepMerge, type DeepPartial } from "../merge";
-import type { Locale } from "../config";
+import { deepMerge, type DeepPartial } from "@/i18n/merge";
+import type { Locale } from "@/i18n/config";
 import { de } from "./de";
 import { en, type Messages } from "./en";
 import { fr } from "./fr";

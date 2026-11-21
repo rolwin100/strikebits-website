@@ -72,7 +72,7 @@ Rules:
 
 ## Adding things
 
-- **A service**: add an entry to `services` in `i18n/content/en.ts` (slug, title, topic, short, description, points, icon, `page` content), and its icon in `data/serviceIcons.ts`. The header dropdown, footer, home cards and `/services/<slug>` page pick it up. Add a matching illustration in `ServiceVisual.tsx`.
+- **A service**: add an entry to `services` in `i18n/translations/content/en.ts` (slug, title, topic, short, description, points, icon, `page` content), and its icon in `data/serviceIcons.ts`. The header dropdown, footer, home cards and `/services/<slug>` page pick it up. Add a matching illustration in `ServiceVisual.tsx`.
 - **A page**: create `app/<route>/page.tsx` returning sections only (the layout supplies header and footer), export `metadata`, put copy in a new `data/` file, add the link in `components/Header/navigation.ts` and the footer.
 - **A legal page**: write a `LegalDocument` in `data/` and render `<LegalPage content={...} />`.
 - **Contact details, socials, booking link**: `data/site.ts` only.
@@ -80,7 +80,7 @@ Rules:
 ## Open items
 
 - `/blog` and `/blog/<slug>` are linked but not built.
-- Sugar Ship uses the Sugar Rush logo until its own is supplied (`i18n/content/en.ts`).
+- Sugar Ship uses the Sugar Rush logo until its own is supplied (`i18n/translations/content/en.ts`).
 - The contact form opens the visitor's email app; it is not connected to a form service. The newsletter form is not wired.
 - Placeholders awaiting real values: stats and the hero "50+", social links, `bookingUrl`, team members and founding story, sample blog posts, service-page copy (draft), privacy policy wording (reconstructed, needs the exact text).
 - `public/banner-img-1.webp` needs a rights check before launch.

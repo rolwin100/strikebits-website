@@ -1,5 +1,5 @@
 // Company and contact details, used by the footer and the contact page.
-// Text that gets translated (reply time, opening hours) is in i18n/messages/en.ts.
+// Text that gets translated (reply time, opening hours) is in i18n/translations/messages/en.ts.
 // Taken from the current strikebits.com contact page.
 export const site = {
   name: "StrikeBits",

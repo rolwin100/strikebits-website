@@ -6,7 +6,8 @@ import { Footer, FooterReveal } from "@/components/Footer";
 import { I18nProvider } from "@/i18n/client";
 import { defaultLocale, translatedLocales, type Locale } from "@/i18n/config";
 import { getServices } from "@/data/services";
-import { getMessages } from "@/i18n/messages";
+import { getMessages } from "@/i18n/translations/messages";
+import { iconMetadata, pageMetadata, siteUrl } from "@/i18n/seo";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -24,9 +25,10 @@ const isTranslated = (locale: Locale) => translatedLocales.includes(locale);
 export function rootMetadata(locale: Locale): Metadata {
   const { site } = getMessages(locale);
   return {
-    title: site.title,
-    description: site.description,
-    ...(isTranslated(locale) ? {} : { robots: { index: false, follow: true } }),
+    metadataBase: new URL(siteUrl),
+    applicationName: "StrikeBits",
+    ...iconMetadata,
+    ...pageMetadata(locale, "/", site),
   };
 }
 

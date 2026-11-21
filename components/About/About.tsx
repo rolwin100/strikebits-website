@@ -9,7 +9,7 @@ import { getAbout } from "@/data/about";
 import { site } from "@/data/site";
 import { stats } from "@/data/stats";
 import type { Locale } from "@/i18n/config";
-import { format, getMessages } from "@/i18n/messages";
+import { format, getMessages } from "@/i18n/translations/messages";
 
 /** Turns "plain **highlighted** plain" into text with the highlighted parts in dark ink. */
 function Highlighted({ text }: { text: string }) {

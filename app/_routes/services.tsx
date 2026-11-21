@@ -5,9 +5,10 @@ import ProcessSection from "@/components/ProcessSection";
 import { WhyStrikeBits } from "@/components/WhyStrikeBits";
 import { Faq } from "@/components/Faq";
 import type { Locale } from "@/i18n/config";
-import { getMessages } from "@/i18n/messages";
+import { pageMetadata } from "@/i18n/seo";
+import { getMessages } from "@/i18n/translations/messages";
 
-export const servicesMetadata = (locale: Locale): Metadata => getMessages(locale).meta.services;
+export const servicesMetadata = (locale: Locale): Metadata => pageMetadata(locale, "/services/", getMessages(locale).meta.services);
 
 export default function ServicesPage({ locale }: { locale: Locale }) {
   return (

@@ -44,7 +44,7 @@ import { site } from "@/data/site";
  *
  * - This is the one place to edit English copy for services, FAQs, blog posts, the About page,
  *   the portfolio and the privacy policy. (Interface text such as buttons and headings is in
- *   i18n/messages/en.ts.)
+ *   i18n/translations/messages/en.ts.)
  * - German and French only list the fields they translate, in de.ts and fr.ts. Anything they leave
  *   out stays English, and lists are matched by position, so keep the same order in every language.
  * - Icons, colours, links and photo paths below are not text; translations leave them alone.

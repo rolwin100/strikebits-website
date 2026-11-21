@@ -2,9 +2,9 @@ import { LocaleLink } from "@/i18n/client";
 import { ArrowUpRight, BadgeCheck, Gauge, Handshake, Route } from "lucide-react";
 import Reveal from "../Reveal";
 import type { Locale } from "@/i18n/config";
-import { getMessages } from "@/i18n/messages";
+import { getMessages } from "@/i18n/translations/messages";
 
-// Icons for each reason; the text is in i18n/messages/en.ts (why.reasons), in the same order
+// Icons for each reason; the text is in i18n/translations/messages/en.ts (why.reasons), in the same order
 const reasonIcons = [BadgeCheck, Route, Gauge, Handshake];
 
 export default function WhyStrikeBits({ locale }: { locale: Locale }) {

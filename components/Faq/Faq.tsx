@@ -4,7 +4,7 @@ import Reveal from "../Reveal";
 import FaqAccordion from "./FaqAccordion";
 import { getFaqs } from "@/data/faqs";
 import type { Locale } from "@/i18n/config";
-import { getMessages } from "@/i18n/messages";
+import { getMessages } from "@/i18n/translations/messages";
 
 export default function Faq({ locale, showContactButton = true }: { locale: Locale; showContactButton?: boolean }) {
   const t = getMessages(locale).faq;
